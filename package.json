@@ -17,7 +17,7 @@
         "lint:fix": "eslint . --ext .js --ext .ts --fix",
         "type:check": "tsc --project tsconfig.json --noEmit",
         "pre-commit": "yarn prettier:fix && yarn link",
-        "ci:check": "npm run lint && npm run type:check && npm test"
+        "ci:check": "yarn run lint && yarn run type:check && yarn test"
     },
     "repository": {
         "type": "git",
