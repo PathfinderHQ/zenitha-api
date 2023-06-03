@@ -1,0 +1,72 @@
+{
+    "name": "zenitha-api",
+    "version": "1.0.0",
+    "description": "This is the API for Zenitha productivity app.",
+    "main": "src/index.ts",
+    "scripts": {
+        "prepare": "husky install",
+        "test": "jest --forceExit --detectOpenHandles",
+        "test:watch": "jest --watchAll --forceExit --detectOpenHandles",
+        "test:coverage": "jest --coverage --forceExit",
+        "build": "tsc",
+        "serve": "node dist/index.js",
+        "start": "npm run serve",
+        "dev": "nodemon src/index.ts",
+        "prettier:fix": "prettier --write .",
+        "lint": "eslint . --ext .js --ext .ts",
+        "lint:fix": "eslint . --ext .js --ext .ts --fix",
+        "type:check": "tsc --project tsconfig.json --noEmit",
+        "pre-commit": "yarn prettier:fix && yarn link",
+        "ci:check": "npm run lint && npm run type:check && npm test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PathfinderHQ/zenitha-api.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/PathfinderHQ/zenitha-api/issues"
+    },
+    "homepage": "https://github.com/PathfinderHQ/zenitha-api#readme",
+    "devDependencies": {
+        "@faker-js/faker": "^8.0.1",
+        "@types/bcryptjs": "^2.4.2",
+        "@types/express": "^4.17.17",
+        "@types/express-fileupload": "^1.4.1",
+        "@types/jest": "^29.5.2",
+        "@types/jsonwebtoken": "^9.0.2",
+        "@types/node": "^20.1.7",
+        "@types/supertest": "^2.0.12",
+        "@typescript-eslint/eslint-plugin": "^5.59.6",
+        "@typescript-eslint/parser": "^5.59.6",
+        "dotenv": "^16.0.3",
+        "eslint": "^8.40.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-jest": "^27.2.1",
+        "eslint-plugin-prettier": "^4.2.1",
+        "husky": "^8.0.3",
+        "jest": "^29.5.0",
+        "nodemon": "^2.0.22",
+        "prettier": "^2.8.8",
+        "supertest": "^6.3.3",
+        "ts-jest": "^29.1.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "date-fns": "^2.30.0",
+        "express": "^4.18.2",
+        "joi": "^17.9.2",
+        "jsonwebtoken": "^9.0.0",
+        "knex": "^2.4.2",
+        "mongoose": "^7.2.2",
+        "mysql2": "^3.3.3",
+        "nanoid": "3.3.6",
+        "pino": "^8.14.1"
+    },
+    "engines": {
+        "node": "18.16.0"
+    }
+}
