@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+    zenitha:
+        build: .
+        depends_on:
+            - mysql_zen
+        links:
+            - mysql_zen
+            - mongodb
+        image: zenitha_api
+        env_file: .env
+        labels:
+            com.example.description: 'Zenitha API'
+        container_name: zenitha
+        networks:
+            - zenitha_net
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '200k'
+                max-file: '5'
+        ports:
+            - 5000:5000
+        volumes:
+            - .:/usr/src/app
+            - /usr/node_modules
+        restart: 'no'
+        command: yarn dev
+
+networks:
+    zenitha_net:
+        driver: bridge

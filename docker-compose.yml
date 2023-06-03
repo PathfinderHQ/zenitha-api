@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+    mysql_db:
+        image: mysql:8.0.28
+        container_name: mysql_zen
+        environment:
+            MYSQL_ROOT_PASSWORD: testPassword
+        ports:
+            - 3306:3306
+        volumes:
+            - mysql_zen:/var/lib/mysql_docker
+            - mysql_config:/etc/mysql_docker
+        logging:
+            driver: none
+        networks:
+            - zenitha_net
+    mongo:
+        image: mongo
+        container_name: mongodb
+        logging:
+            driver: none
+        ports:
+            - 27017:27017
+        volumes:
+            - mongo:/var/lib/mongodb/data
+        networks:
+            - zenitha_net
+
+networks:
+    zenitha_net:
+        driver: bridge
+
+volumes:
+    mysql_zen:
+        driver: local
+    mysql_config:
+        driver: local
+    mongodb:
+        driver: local
