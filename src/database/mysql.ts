@@ -1,6 +1,5 @@
 import knex, { Knex } from 'knex';
 import Config from '../config';
-import { Field } from 'mysql2';
 
 const { nodeEnv, databaseUser, databasePass, databaseHost, databaseName } = Config;
 

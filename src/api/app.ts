@@ -1,7 +1,6 @@
 import { express, Application, Request, Response, NextFunction, Server } from '../types';
 import Config from '../config';
 import { logRequestMiddleware } from '../config/log';
-import { connection, createMysqlAdapter } from '../database';
 
 const startExpressApp = (): Application => {
     const app = express();
@@ -30,8 +29,6 @@ const startExpressApp = (): Application => {
 
 export const createNewServer = (): Server => {
     const app = startExpressApp();
-
-    const DB = createMysqlAdapter(connection);
 
     const server: Server = {
         app,
