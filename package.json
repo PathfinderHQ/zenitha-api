@@ -9,7 +9,7 @@
         "test:watch": "jest --watchAll --forceExit --detectOpenHandles",
         "test:coverage": "jest --coverage --forceExit",
         "build": "tsc",
-        "serve": "node dist/index.js",
+        "serve": "node index.js",
         "start": "npm run serve",
         "dev": "nodemon src/index.ts",
         "prettier:fix": "prettier --write .",
