@@ -19,16 +19,18 @@ jobs:
                   node-version: 18.16.0
 
             - name: Build package
-              run: npm install --include=dev && npm run build
+              run: yarn install --include=dev && yarn run build
 
             - name: Generate deployment package
               run: |
                   cp package.json ./dist/package.json
                   cd dist
+                  zip -q -r ${{ env.APP_NAME }}.zip . -x '*.git*'
+                  mv ${{ env.APP_NAME }}.zip ../
 
             - name: Publish to Azure App Service
               uses: azure/webapps-deploy@v2
               with:
                   app-name: ${{ secrets.AZURE_APP_NAME }}
                   publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                  package: dist
+                  package: ${{ env.APP_NAME }}.zip
