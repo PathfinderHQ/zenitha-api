@@ -19,9 +19,10 @@ jobs:
 
             - name: npm install, build, and test
               run: |
-                  npm install --include=dev
-                  npm run build
+                  yarn install --include=dev
+                  yarn run build
                   cp package.json ./dist/package.json
+                  cp yarn.lock ./dist/yarn.lock
                   cd dist
                   zip -q -r ${{ env.APP_NAME }}.zip . -x '*.git*'
                   mv ${{ env.APP_NAME }}.zip ../
