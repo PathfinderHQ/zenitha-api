@@ -21,6 +21,7 @@ jobs:
               run: |
                   yarn install --include=dev
                   yarn run build
+                  cp package.json ./dist/package.json
                   cd dist
                   zip -q -r ${{ env.APP_NAME }}.zip . -x '*.git*'
                   mv ${{ env.APP_NAME }}.zip ../
