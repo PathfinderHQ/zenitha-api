@@ -41,19 +41,15 @@ export const newUserStore = (us: UserStore): UserService => {
         await us.DB(USERS).where(filter).del();
     };
 
-
-
-    return  { create, get, list, update, remove }
-}
+    return { create, get, list, update, remove };
+};
 
 const userQuery = (db: Knex, filter: UserFilter): Knex.QueryBuilder => {
-    const query = db(USERS)
-        .select('*')
-        .orderBy('created_at', 'desc');
+    const query = db(USERS).select('*').orderBy('created_at', 'desc');
 
     if (filter.id) query.where('id', filter.id);
     if (filter.email) query.where(db.raw('lower(u.email)'), '=', filter.email.toLowerCase);
     if (filter.sign_in_provider) query.where('sign_in_provider', filter.sign_in_provider);
 
     return query;
-}
+};
