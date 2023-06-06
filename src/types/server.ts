@@ -1,4 +1,5 @@
 import express, { Request as ExpressRequest, Response as ExpressResponse, Application } from 'express';
+import { UserService } from './user';
 
 export interface Request extends ExpressRequest {
     request_id: string;
@@ -10,6 +11,7 @@ export interface Response extends ExpressResponse {
 
 export interface Server {
     app: Application;
+    userService: UserService;
 }
 
 export { Router, NextFunction, Application } from 'express';
