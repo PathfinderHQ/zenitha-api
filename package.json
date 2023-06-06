@@ -8,7 +8,7 @@
         "test": "jest --forceExit --detectOpenHandles",
         "test:watch": "jest --watchAll --forceExit --detectOpenHandles",
         "test:coverage": "jest --coverage --forceExit",
-        "build": "tsc",
+        "build": "tsc -p .",
         "serve": "node index.js",
         "start": "yarn install --include=dev && yarn run serve",
         "dev": "nodemon src/index.ts",
