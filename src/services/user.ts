@@ -57,9 +57,7 @@ export const newUserStore = (us: UserStore): UserService => {
 
 // Build our user database query dynamically
 const userQuery = (db: Knex, filter: UserFilter): Knex.QueryBuilder => {
-    const query = db(USERS)
-        .select('*')
-        .orderBy('created_at', 'desc');
+    const query = db(USERS).select('*').orderBy('created_at', 'desc');
 
     if (filter.id) query.where('id', filter.id);
     if (filter.email) query.where(db.raw('lower(email)'), '=', filter.email.toLowerCase());
