@@ -3,6 +3,7 @@ import Config from '../config';
 import { logRequestMiddleware } from '../config/log';
 import { connection, createMysqlAdapter } from '../database';
 import * as services from '../services';
+import { authHTTPService } from './auth';
 
 const startExpressApp = (): Application => {
     const app = express();
@@ -30,17 +31,28 @@ const startExpressApp = (): Application => {
 };
 
 export const createNewServer = (): Server => {
+    // create express app
     const app = startExpressApp();
+
+    // create database connection
     const DB = createMysqlAdapter(connection);
 
+    // create required services
     const userService = services.newUserStore({ DB });
 
+    // build server object with all the required services
     const server: Server = {
         app,
         userService,
     };
 
+    // create the express router
     const router = express.Router();
+
+    // mount routes
+
+    // mount auth endpoints
+    authHTTPService(server).registerAuthRoutes(router);
 
     app.use('/', router);
 
