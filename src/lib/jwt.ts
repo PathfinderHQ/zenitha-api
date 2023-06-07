@@ -1,5 +1,6 @@
 import { sign, verify, JwtPayload } from 'jsonwebtoken';
 import Config from '../config';
+import { User } from '../types';
 
 const { jwtSecret, jwtExpiry } = Config;
 
@@ -17,3 +18,10 @@ export function verifyToken(token: string): any {
 export function returnExpiry(token: string): any {
     return verifyToken(token).exp;
 }
+
+export const handleToken = (data: User): { token: string; expiry: number } => {
+    const token = issueToken({ id: data.id });
+    const expiry = returnExpiry(token);
+
+    return { token, expiry };
+};

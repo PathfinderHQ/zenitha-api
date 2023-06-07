@@ -1,4 +1,4 @@
-import { SignInProvider } from './enum';
+import { SignInProvider } from './enums';
 
 export interface User {
     id: string;
@@ -46,5 +46,4 @@ export interface UserService {
     list(filter: UserFilter): Promise<User[]>;
     get(filter: UserFilter): Promise<User>;
     update(filter: UserFilter, data: UserUpdate): Promise<User>;
-    remove(filter: UserFilter): Promise<void>;
 }

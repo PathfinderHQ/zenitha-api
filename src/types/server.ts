@@ -1,8 +1,9 @@
 import express, { Request as ExpressRequest, Response as ExpressResponse, Application } from 'express';
-import { UserService } from './user';
+import { User, UserService } from './user';
 
 export interface Request extends ExpressRequest {
     request_id: string;
+    user: User;
 }
 
 export interface Response extends ExpressResponse {

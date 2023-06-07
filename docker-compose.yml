@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-    mysql_db:
+    mysql_zen:
         image: mysql:8.0.28
         container_name: mysql_zen
         environment:
@@ -15,7 +15,7 @@ services:
             driver: none
         networks:
             - zenitha_net
-    mongo:
+    mongodb:
         image: mongo
         container_name: mongodb
         logging:
@@ -23,7 +23,7 @@ services:
         ports:
             - 27017:27017
         volumes:
-            - mongo:/var/lib/mongodb/data
+            - mongodb:/var/lib/mongodb/data
         networks:
             - zenitha_net
 
