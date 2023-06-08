@@ -1,6 +1,7 @@
 import { Request, Response, Router, Server } from '../types';
 import {
     errorResponse,
+    handleGoogleAuthError,
     handleToken,
     isInvalidPassword,
     serverErrorResponse,
@@ -8,9 +9,10 @@ import {
     validateSchema,
 } from '../lib';
 import { HttpStatusCode } from '../config';
-import { loginSchema, registerSchema } from '../validations';
+import { googleAuthSchema, loginSchema, registerSchema } from '../validations';
 import { SignInProvider } from '../types/enums';
 import { middleware } from './middlewares';
+import firebase from '../lib/firebase';
 
 export const authHTTPService = (server: Server) => {
     // retrieve middleware function for usage
@@ -20,6 +22,7 @@ export const authHTTPService = (server: Server) => {
     const registerAuthRoutes = (router: Router) => {
         router.post('/register', register);
         router.post('/login', login);
+        router.post('/google/auth', googleAuth);
 
         // uses middleware to identify user using the jwt
         router.get('/user', isAuthenticatedUser, getLoggedInUser);
@@ -117,6 +120,48 @@ export const authHTTPService = (server: Server) => {
             return successResponse(res, HttpStatusCode.OK, 'User retrieved', user);
         } catch (err) {
             return serverErrorResponse(res, 'GetLoggedInUser', err);
+        }
+    };
+
+    /**
+     * This endpoint handles the logic to register or login a user using google
+     * A Google auth code will be passed as a payload
+     * Firebase admin will be used to retrieve the user email from the token
+     * then we'll create the user if he does not exist or we'll just change the
+     * user to google sign if the user already exists
+     * then issue our server token to the user
+     * The function serves two purposes because both sign in and sign up action on google
+     * will always return a token. And we'll end up using the token same way in register and login
+     * so, it's easy to handle both case in one function (controller)
+     */
+    const googleAuth = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            // validate the req body using the defined schema
+            const { error, value } = await validateSchema(googleAuthSchema, req.body);
+
+            // return error if the request body fails validation
+            if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
+
+            // retrieve the user email using the google token received from req.body
+            const { email, uid } = await firebase.auth().verifyIdToken(value.token);
+
+            // search for user
+            let user = await server.userService.get({ email });
+
+            // if user is not found, create a new user
+            if (!user) {
+                user = await server.userService.create({
+                    email,
+                    sign_in_provider: SignInProvider.GOOGLE,
+                    google_user_id: uid,
+                });
+            }
+
+            const { expiry, token } = handleToken(user);
+
+            return successResponse(res, HttpStatusCode.OK, 'User identified', { user, token, expiry });
+        } catch (err) {
+            return handleGoogleAuthError(res, err);
         }
     };
 

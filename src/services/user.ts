@@ -13,8 +13,10 @@ export const newUserStore = (us: UserStore): UserService => {
     const create = async (data: UserCreate): Promise<User> => {
         const id = generateId();
 
-        // hash password before saving to the database
-        data.password = hashPassword(data.password);
+        // hash password before saving to the database if it exists
+        if (data.password) {
+            data.password = hashPassword(data.password);
+        }
 
         await us.DB(USERS).insert({ id, ...data });
 
