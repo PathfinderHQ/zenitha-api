@@ -18,3 +18,4 @@ process.env.FIREBASE_TOKEN_URI = 'test';
 process.env.FIREBASE_AUTH_PROVIDER = 'test';
 process.env.FIREBASE_CLIENT_CERT = 'test';
 process.env.UNIVERSE_DOMAIN = 'test';
+process.env.SENDGRID_API_KEY = 'SG.test';

@@ -1,4 +1,4 @@
-import pino from 'pino';
+import pino, { Logger } from 'pino';
 
 import {
     Log,
@@ -16,7 +16,7 @@ import { generateRandomString } from '../lib';
 import Config from '../config';
 import { createMongoDBAdapter, LogModel } from '../database';
 
-function formatLogResults(results: ILog[] = []): Log[] {
+export const formatLogResults = (results: ILog[] = []): Log[] => {
     return results.map((result) => ({
         level: result.level,
         type: result.type,
@@ -25,9 +25,9 @@ function formatLogResults(results: ILog[] = []): Log[] {
         id: result.id,
         message: result.message,
     }));
-}
+};
 
-function buildMongoDBLogTransport(): LogTransport {
+export const buildMongoDBLogTransport = (): LogTransport => {
     createMongoDBAdapter(Config.logUrl).then();
 
     return {
@@ -62,9 +62,9 @@ function buildMongoDBLogTransport(): LogTransport {
             }
         },
     };
-}
+};
 
-const consoleTransport: LogTransport = {
+export const consoleTransport: LogTransport = {
     write(log): Promise<void> {
         console.log(log);
         return;
@@ -87,10 +87,10 @@ const errorSerializer = (err: Error) => {
     };
 };
 
-class LogService {
+export class LogService {
     private static instance: LogService;
     private transport: LogTransport;
-    private readonly logger: any;
+    readonly logger: Logger;
 
     constructor(transport: LogTransport = consoleTransport) {
         if (LogService.instance) {
@@ -100,7 +100,7 @@ class LogService {
         this.transport = transport;
         this.logger = pino(
             {
-                name: 'alt-address',
+                name: 'zenitha',
                 redact: ['password', 'body.password', 'body.new_password'],
             },
             transport
@@ -136,7 +136,7 @@ class LogService {
 
 const logger = new LogService(Config.nodeEnv === 'production' ? buildMongoDBLogTransport() : undefined);
 
-export function logRequestMiddleware() {
+export const logRequestMiddleware = () => {
     return function (req: Request, res: Response, next: NextFunction) {
         const requestId = generateRandomString();
         req.request_id = requestId;
@@ -150,6 +150,6 @@ export function logRequestMiddleware() {
         });
         return next();
     };
-}
+};
 
 export default logger;

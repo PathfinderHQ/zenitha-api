@@ -39,11 +39,13 @@ export const createNewServer = (): Server => {
 
     // create required services
     const userService = services.newUserStore({ DB });
+    const appEmailService = services.emailService();
 
     // build server object with all the required services
     const server: Server = {
         app,
         userService,
+        appEmailService,
     };
 
     // create the express router
