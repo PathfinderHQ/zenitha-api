@@ -8,6 +8,10 @@ export enum NODE_ENV {
 
 export const BCRYPT_SALT = 10;
 export const PASSWORD_REGEX = '^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$';
+export const ZENITHA_NO_REPLY = {
+    email: 'Ajaorqb@gmail.com', // TODO: change this value
+    name: 'Zenitha',
+};
 
 export enum HttpStatusCode {
     OK = 200,

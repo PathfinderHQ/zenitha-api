@@ -11,7 +11,7 @@ export interface SendEmailTextParams {
 
 export interface SendEmailTemplateParams {
     to: string | string[];
-    from: string;
+    from: string | { name?: string; email: string };
     subject?: string;
     emailType: EmailTypes;
     templateData: TemplateData;

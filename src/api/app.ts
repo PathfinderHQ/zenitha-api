@@ -38,14 +38,16 @@ export const createNewServer = (): Server => {
     const DB = createMysqlAdapter(connection);
 
     // create required services
-    const userService = services.newUserStore({ DB });
     const appEmailService = services.emailService();
+    const otpService = services.newOtpStore({ DB, appEmailService });
+    const userService = services.newUserStore({ DB, appEmailService });
 
     // build server object with all the required services
     const server: Server = {
         app,
         userService,
         appEmailService,
+        otpService,
     };
 
     // create the express router
