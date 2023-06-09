@@ -13,6 +13,10 @@ jest.mock('../../src/lib/firebase', () => {
 });
 
 describe('Authentication Endpoint', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe('Register', () => {
         it('should register successfully', async () => {
             const data = {
