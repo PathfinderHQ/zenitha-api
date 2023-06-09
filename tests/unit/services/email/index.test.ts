@@ -6,6 +6,7 @@ import { sgMail } from '../../../../src/services/email/sendgrid';
 import logger from '../../../../src/config/log';
 import { EmailTypes } from '../../../../src/types/enums';
 import { getEmailAdapter } from '../../../../src/services';
+import { sendgridSuccessResult } from '../../../utils';
 
 jest.mock('../../../../src/services', () => {
     const originalModule = jest.requireActual('../../../../src/services');
@@ -37,7 +38,7 @@ describe('Email Service', () => {
         };
 
         it('should send text email', async () => {
-            const spy = jest.spyOn(sgMail, 'send').mockResolvedValue([{ statusCode: 200 }, {}] as any);
+            const spy = jest.spyOn(sgMail, 'send').mockResolvedValue(sendgridSuccessResult);
 
             await appEmailService.sendEmailText(params);
 
@@ -70,7 +71,7 @@ describe('Email Service', () => {
         };
 
         it('should send text email', async () => {
-            const spy = jest.spyOn(sgMail, 'send').mockResolvedValue([{ statusCode: 200 }, {}] as any);
+            const spy = jest.spyOn(sgMail, 'send').mockResolvedValue(sendgridSuccessResult);
 
             await appEmailService.sendEmailTemplate(params);
 

@@ -3,6 +3,7 @@ import { EmailClientService, SendEmailTemplateParams, SendEmailTextParams } from
 import { getTemplateId, sendgridService, sgMail } from '../../../../src/services/email/sendgrid';
 import logger from '../../../../src/config/log';
 import { EmailTypes } from '../../../../src/types/enums';
+import { sendgridErrorResult, sendgridSuccessResult } from '../../../utils';
 
 describe('Sendgrid Service', () => {
     let emailClientService: EmailClientService;
@@ -26,7 +27,7 @@ describe('Sendgrid Service', () => {
         };
 
         it('should send text email', async () => {
-            jest.spyOn(sgMail, 'send').mockResolvedValue([{ statusCode: 200 }, {}] as any);
+            jest.spyOn(sgMail, 'send').mockResolvedValue(sendgridSuccessResult);
 
             const result = await emailClientService.sendEmailText(params);
 
@@ -34,7 +35,7 @@ describe('Sendgrid Service', () => {
         });
 
         it('should log error', async () => {
-            jest.spyOn(sgMail, 'send').mockRejectedValue([{ statusCode: 400 }, {}] as any);
+            jest.spyOn(sgMail, 'send').mockRejectedValue(sendgridErrorResult);
 
             const logSpy = jest.spyOn(logger, 'error');
 
@@ -56,7 +57,7 @@ describe('Sendgrid Service', () => {
         };
 
         it('should send text email', async () => {
-            jest.spyOn(sgMail, 'send').mockResolvedValue([{ statusCode: 200 }, {}] as any);
+            jest.spyOn(sgMail, 'send').mockResolvedValue(sendgridSuccessResult);
 
             const result = await emailClientService.sendEmailTemplate(params);
 
@@ -64,7 +65,7 @@ describe('Sendgrid Service', () => {
         });
 
         it('should log error', async () => {
-            jest.spyOn(sgMail, 'send').mockRejectedValue([{ statusCode: 400 }, {}] as any);
+            jest.spyOn(sgMail, 'send').mockRejectedValue(sendgridErrorResult);
 
             const logSpy = jest.spyOn(logger, 'error');
 
