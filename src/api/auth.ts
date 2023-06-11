@@ -7,7 +7,7 @@ import {
     serverErrorResponse,
     successResponse,
     validateSchema,
-    comparePassword
+    comparePassword,
 } from '../lib';
 import { HttpStatusCode } from '../config';
 import {
