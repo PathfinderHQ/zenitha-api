@@ -301,7 +301,7 @@ export const authHTTPService = (server: Server) => {
 
             const user = await server.userService.update({ id: req.user.id }, { password: value.new_password });
 
-            delete req.user.password;
+            delete user.password;
 
             return successResponse(res, HttpStatusCode.OK, 'Password changed', user);
         } catch (err) {
