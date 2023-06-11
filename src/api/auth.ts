@@ -291,7 +291,6 @@ export const authHTTPService = (server: Server) => {
 
     const changePassword = async (req: Request, res: Response): Promise<Response> => {
         try {
-            let user = req.user;
             const { error, value } = await validateSchema(changePasswordSchema, req.body);
 
             if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
@@ -299,11 +298,10 @@ export const authHTTPService = (server: Server) => {
             if (!comparePassword(value.password, req.user.password)) {
                 return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Wrong password');
             }
-            const id = req.user.id;
 
-            user = await server.userService.update({ id }, { password: value.new_password });
+            const user = await server.userService.update({ id: req.user.id }, { password: value.new_password });
 
-            delete user.password;
+            delete req.user.password;
 
             return successResponse(res, HttpStatusCode.OK, 'Password changed', user);
         } catch (err) {
