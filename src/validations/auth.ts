@@ -23,6 +23,11 @@ interface VerifyEmail {
     otp: string;
 }
 
+interface ChangePasswordSchema {
+    password: string;
+    new_password: string;
+}
+
 export const registerSchema: ObjectSchema<AuthPayload> = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().pattern(new RegExp(PASSWORD_REGEX)).required(),
@@ -48,4 +53,9 @@ export const resetPasswordSchema: ObjectSchema<ResetPassword> = Joi.object({
 
 export const verifyEmailSchema: ObjectSchema<VerifyEmail> = Joi.object({
     otp: Joi.string().length(6).required(),
+});
+
+export const changePasswordSchema: ObjectSchema<ChangePasswordSchema> = Joi.object({
+    password: Joi.string().required(),
+    new_password: Joi.string().pattern(new RegExp(PASSWORD_REGEX)).required(),
 });

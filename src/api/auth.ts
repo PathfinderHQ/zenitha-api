@@ -7,9 +7,11 @@ import {
     serverErrorResponse,
     successResponse,
     validateSchema,
+    comparePassword
 } from '../lib';
 import { HttpStatusCode } from '../config';
 import {
+    changePasswordSchema,
     forgotPasswordSchema,
     googleAuthSchema,
     loginSchema,
@@ -33,6 +35,7 @@ export const authHTTPService = (server: Server) => {
         router.post('/forgot_password', forgotPassword);
         router.post('/reset_password', resetPassword);
         router.post('/verify_email', verifyEmail);
+        router.post('/user/change_password', isAuthenticatedUser, changePassword);
 
         // uses middleware to identify user using the jwt
         router.post('/user/resend_verify', isAuthenticatedUser, resendVerifyEmailOtp);
@@ -283,6 +286,28 @@ export const authHTTPService = (server: Server) => {
             return successResponse(res, HttpStatusCode.OK, 'Otp sent');
         } catch (err) {
             return serverErrorResponse(res, 'ResendVerifyEmailOtp', err);
+        }
+    };
+
+    const changePassword = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            let user = req.user;
+            const { error, value } = await validateSchema(changePasswordSchema, req.body);
+
+            if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
+
+            if (!comparePassword(value.password, req.user.password)) {
+                return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Wrong password');
+            }
+            const id = req.user.id;
+
+            user = await server.userService.update({ id }, { password: value.new_password });
+
+            delete user.password;
+
+            return successResponse(res, HttpStatusCode.OK, 'Password changed', user);
+        } catch (err) {
+            return serverErrorResponse(res, 'ChangePassword', err);
         }
     };
 
