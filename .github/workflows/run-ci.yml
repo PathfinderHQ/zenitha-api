@@ -16,31 +16,31 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
-          NODE_ENV: test
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 3306
-          DATABASE_NAME: zenithatesting
-          DATABASE_USER: root
-          DATABASE_PASS: testPassword
-          JWT_EXPIRY: 1y
-          JWT_SECRET: someverylongpassword
+            NODE_ENV: test
+            DATABASE_HOST: 127.0.0.1
+            DATABASE_PORT: 3306
+            DATABASE_NAME: zenithatesting
+            DATABASE_USER: root
+            DATABASE_PASS: testPassword
+            JWT_EXPIRY: 1y
+            JWT_SECRET: someverylongpassword
 
         services:
-          mysql:
-            image: mysql:latest
-            env:
-              MYSQL_ROOT_PASSWORD: testPassword
-            ports:
-              - 3306:3306
-            options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+            mysql:
+                image: mysql:latest
+                env:
+                    MYSQL_ROOT_PASSWORD: testPassword
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
         steps:
             - uses: actions/checkout@v2
             - name: Set up MySQL
               run: |
-                mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "CREATE DATABASE IF NOT EXISTS zenithatesting;"
-                mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY '${{ env.DATABASE_PASS }}';"
-                mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "FLUSH PRIVILEGES;"
+                  mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "CREATE DATABASE IF NOT EXISTS zenithatesting;"
+                  mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY '${{ env.DATABASE_PASS }}';"
+                  mysql -u root -p${{ env.DATABASE_PASS }} -h ${{ env.DATABASE_HOST }} -P 3306 -e "FLUSH PRIVILEGES;"
 
             - name: Setup Node 18
               uses: actions/setup-node@v2
