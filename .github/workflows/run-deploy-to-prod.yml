@@ -23,7 +23,7 @@ jobs:
                   echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
                   sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
                   sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=$GITHUB_RUN_ID
-                  sudo tailscale up --advertise-routes=${{ secrets.AZURE_NETWORK }} --accept-routes  # Replace with your private network subnet
+                  sudo tailscale up --advertise-routes=${{ secrets.AZURE_NETWORK }} --accept-routes --reset  # Replace with your private network subnet
 
             - name: Checkout repository
               uses: actions/checkout@v2
