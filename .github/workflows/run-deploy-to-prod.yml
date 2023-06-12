@@ -10,6 +10,18 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: Install Tailscale
+              run: |
+                  curl -fsSL https://tailscale.com/install.sh | sh
+
+            - name: Connect to Tailscale Network
+              env:
+                  TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+                  TAILSCALE_NETWORK_ID: ${{ secrets.TAILSCALE_NETWORK_ID }}
+              run: |
+                  sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=$GITHUB_RUN_ID
+                  sudo tailscale up --advertise-routes=${{ secrets.AZURE_NETWORK }}  # Replace with your private network subnet
+
             - name: Checkout repository
               uses: actions/checkout@v2
 
