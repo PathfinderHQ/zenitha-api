@@ -27,7 +27,9 @@ jobs:
             - name: Write SSH private key to file
               run: |
                   echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
-                  chmod 600 private_key.pem
+                  ls
+                  cat private_key.pem
+                  chmod 400 private_key.pem
 
             - name: Deploy to Azure VM
               run: |
