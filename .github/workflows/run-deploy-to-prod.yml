@@ -24,13 +24,13 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Write SSH private key to file
+            - name: Configure SSH
               run: |
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
-                  ls
-                  cat private_key.pem
-                  chmod 400 private_key.pem
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/key.pem
+                  chmod 600 ~/.ssh/key.pem
+                  ssh-keyscan github.com >> ~/.ssh/known_hosts
 
             - name: Deploy to Azure VM
               run: |
-                  ssh -i ./private_key.pem ${{ secrets.USER }}@${{ secrets.APP_IP }} "cd zenitha-api && git pull origin main && yarn install && yarn build && pm2 reload ${{ secrets.APP_NAME }}"
+                  ssh -i ~/.ssh/key.pem -o UserKnownHostsFile=/github/home/.ssh/known_hosts -tt ${{ secrets.USER }}@${{ secrets.APP_IP }} "cd zenitha-api && git pull origin main && yarn install && yarn build && pm2 reload ${{ secrets.APP_NAME }}"
