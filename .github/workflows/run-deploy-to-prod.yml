@@ -31,7 +31,6 @@ jobs:
                   username: ${{ secrets.USER }} # Replace with your Azure VM username
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      echo "Hello, Azure VM!"
                       cd zenitha-api
                       git pull origin main
                       yarn build
