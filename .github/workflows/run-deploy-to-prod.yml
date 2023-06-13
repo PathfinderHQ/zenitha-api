@@ -34,4 +34,4 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       echo "Running the script"
-                      ./script.sh
+                      bash ./script.sh
