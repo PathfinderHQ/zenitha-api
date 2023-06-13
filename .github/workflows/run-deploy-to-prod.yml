@@ -34,5 +34,6 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       cd zenitha-api
-                      ls 
-                      sudo tailscale status
+                      git pull origin main
+                      yarn build
+                      pm2 reload ${{ secrets.APP_NAME }}
