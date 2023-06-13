@@ -33,7 +33,7 @@ jobs:
                   username: ${{ secrets.USER }} # Replace with your Azure VM username
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      cd zenitha-api
+                      cd ${{ secrets.APP_PATH }}
                       git pull origin main
                       yarn build
                       pm2 reload ${{ secrets.APP_NAME }}
