@@ -32,6 +32,8 @@ jobs:
                   host: ${{ secrets.APP_IP }}
                   username: ${{ secrets.USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script_stop: true
                   script: |
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
