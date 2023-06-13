@@ -30,7 +30,7 @@ jobs:
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.APP_IP }}
-                  username: ${{ secrets.USER }} # Replace with your Azure VM username
+                  username: ${{ secrets.USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       cd ${{ secrets.APP_PATH }}
