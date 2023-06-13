@@ -19,11 +19,7 @@ jobs:
                   TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
                   TAILSCALE_NETWORK_ID: ${{ secrets.TAILSCALE_NETWORK_ID }}
               run: |
-                  echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-                  echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-                  sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
-                  sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=$GITHUB_RUN_ID
-                  sudo tailscale up --advertise-routes=${{ secrets.AZURE_NETWORK }} --accept-routes --reset  # Replace with your private network subnet
+                  sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --accept-routes --hostname=$GITHUB_RUN_ID
 
             - name: Checkout repository
               uses: actions/checkout@v2
@@ -35,4 +31,4 @@ jobs:
 
             - name: Deploy to Azure VM
               run: |
-                  ssh ${{ secrets.USER }}@${{ secrets.APP_IP }} "cd zenitha-api && git pull origin main && yarn install && yarn build && pm2 reload ${{ secrets.APP_NAME }}"
+                  ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.USER }}@${{ secrets.APP_IP }} "cd zenitha-api && git pull origin main && yarn install && yarn build && pm2 reload ${{ secrets.APP_NAME }}"
