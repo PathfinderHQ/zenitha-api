@@ -33,5 +33,9 @@ jobs:
                   username: ${{ secrets.USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      echo "Running the script"
-                      bash ./script.sh
+                    export NVM_DIR=~/.nvm
+                    source ~/.nvm/nvm.sh
+                    cd zenitha-api
+                    yarn build
+                    pm2 reload zenitha --watch --update-env
+
