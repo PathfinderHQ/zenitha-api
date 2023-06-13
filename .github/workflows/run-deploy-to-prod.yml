@@ -5,6 +5,8 @@ on:
         branches:
             - main
 
+    workflow_dispatch:
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
@@ -32,6 +34,5 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       cd zenitha-api
-                      git pull origin main
-                      yarn build
-                      pm2 reload ${{ secrets.APP_NAME }}
+                      ls 
+                      sudo tailscale status
