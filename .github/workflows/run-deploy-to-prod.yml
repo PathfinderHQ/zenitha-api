@@ -33,7 +33,4 @@ jobs:
                   username: ${{ secrets.USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      cd ${{ secrets.APP_PATH }}
-                      git pull origin main
-                      yarn build
-                      pm2 reload ${{ secrets.APP_NAME }}
+                      ./script.sh
