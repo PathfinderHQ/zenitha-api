@@ -33,10 +33,12 @@ jobs:
                   username: ${{ secrets.USER }}
                   key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
+                  proxy_passphrase: ${{ secrets.SSH_PROXY_PASSPHRASE }}
                   script_stop: true
                   script: |
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
                       cd zenitha-api
+                      git pull https://AbdRaqeeb:${{ secrets.PROJECT_TOKEN }}@github.com/PathfinderHQ/zenitha-api develop
                       yarn build
                       pm2 reload zenitha --watch --update-env
