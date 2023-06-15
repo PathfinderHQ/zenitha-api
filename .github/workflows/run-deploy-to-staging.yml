@@ -38,6 +38,5 @@ jobs:
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
                       cd zenitha-api
-                      git pull https://AbdRaqeeb:${{ secrets.PROJECT_TOKEN }}@github.com/PathfinderHQ/zenitha-api develop
                       yarn build
                       pm2 reload zenitha --watch --update-env
