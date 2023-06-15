@@ -1,26 +1,57 @@
 import { Knex } from 'knex';
-import { User, UserService, UserUpdate, UserFilter, UserCreate } from '../types';
-import { USERS } from '../database';
-import { generateId, hashPassword } from '../lib';
+import { EmailService, User, UserCreate, UserFilter, UserService, UserUpdate } from '../types';
+import { OTPS, USERS } from '../database';
+import { generateId, generateOtp, hashPassword } from '../lib';
+import { EmailTypes, OtpType, SignInProvider } from '../types/enums';
+import { ZENITHA_NO_REPLY } from '../config';
 
 export interface UserStore {
     DB: Knex;
+    appEmailService: EmailService;
 }
 
 // Create a store that access the database to run operations peculiar to user service
 export const newUserStore = (us: UserStore): UserService => {
     // create a user
     const create = async (data: UserCreate): Promise<User> => {
-        const id = generateId();
+        // using transaction because there's going to be
+        // multiple insert that are dependent on each other
+        // we want atomicity, i.e. either everything is successful
+        // or everything rolls back
+        return us.DB.transaction(async (trx) => {
+            const id = generateId();
 
-        // hash password before saving to the database
-        data.password = hashPassword(data.password);
+            // hash password before saving to the database if it exists
+            if (data.password) {
+                data.password = hashPassword(data.password);
+            }
 
-        await us.DB(USERS).insert({ id, ...data });
+            // create user in the users table
+            await trx(USERS).insert({ id, ...data });
 
-        const [user] = await userQuery(us.DB, { id });
+            // if the user registered by email and password
+            // we want to verify the email
+            if (data.sign_in_provider === SignInProvider.CUSTOM) {
+                const otp = generateOtp();
 
-        return user;
+                // create otp in the otps table
+                await trx(OTPS).insert({ otp, user: id, type: OtpType.VERIFY_EMAIL });
+
+                // send email otp, we won't await it, we'll let it run asynchronously
+                // so our endpoint response is not slow.
+                // also this leave our service unaffected if an error occurs during sending the email
+                us.appEmailService.sendEmailTemplate({
+                    to: data.email,
+                    from: ZENITHA_NO_REPLY,
+                    emailType: EmailTypes.VERIFY_EMAIL,
+                    templateData: { otp },
+                });
+            }
+
+            const [user] = await userQuery(trx, { id });
+
+            return user;
+        });
     };
 
     // get list of users
@@ -56,12 +87,13 @@ export const newUserStore = (us: UserStore): UserService => {
 };
 
 // Build our user database query dynamically
-const userQuery = (db: Knex, filter: UserFilter): Knex.QueryBuilder => {
+const userQuery = (db: Knex | Knex.Transaction, filter: UserFilter): Knex.QueryBuilder => {
     const query = db(USERS).select('*').orderBy('created_at', 'desc');
 
     if (filter.id) query.where('id', filter.id);
     if (filter.email) query.where(db.raw('lower(email)'), '=', filter.email.toLowerCase());
     if (filter.sign_in_provider) query.where('sign_in_provider', filter.sign_in_provider);
+    if (filter.verified) query.where('verified', filter.verified);
 
     return query;
 };

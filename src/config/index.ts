@@ -1,9 +1,17 @@
 import 'dotenv/config';
 
-type NODE_ENV = 'development' | 'production' | 'test';
+export enum NODE_ENV {
+    DEVELOPMENT = 'development',
+    PRODUCT = 'production',
+    TEST = 'test',
+}
 
 export const BCRYPT_SALT = 10;
 export const PASSWORD_REGEX = '^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\\d]){1,})(?=(.*[\\W]){1,})(?!.*\\s).{8,}$';
+export const ZENITHA_NO_REPLY = {
+    email: 'Ajaorqb@gmail.com', // TODO: change this value
+    name: 'Zenitha',
+};
 
 export enum HttpStatusCode {
     OK = 200,
@@ -30,6 +38,20 @@ export interface Config {
     jwtSecret: string;
     jwtExpiry: string;
     logUrl: string;
+    firebase: {
+        type: string;
+        project_id: string;
+        private_key_id: string;
+        private_key: string;
+        client_email: string;
+        client_id: string;
+        auth_uri: string;
+        token_uri: string;
+        auth_provider_x509_cert_url: string;
+        client_x509_cert_url: string;
+        universe_domain: string;
+    };
+    sendgridApiKey: string;
 }
 
 export const getConfig = (): Config => {
@@ -44,7 +66,7 @@ export const getConfig = (): Config => {
 
     return {
         port: Number(process.env.PORT) || 8000,
-        nodeEnv: (process.env.NODE_ENV as NODE_ENV) || 'development',
+        nodeEnv: (process.env.NODE_ENV as NODE_ENV) || NODE_ENV.DEVELOPMENT,
         databaseName: process.env.DATABASE_NAME,
         databaseHost: process.env.DATABASE_HOST,
         databasePass: process.env.DATABASE_PASS,
@@ -52,6 +74,20 @@ export const getConfig = (): Config => {
         jwtSecret: process.env.JWT_SECRET || '2 days',
         jwtExpiry: process.env.JWT_EXPIRY || 'woohoo',
         logUrl: process.env.LOG_URL || '',
+        firebase: {
+            type: process.env.FIREBASE_TYPE,
+            project_id: process.env.FIREBASE_PROJECT_ID,
+            private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+            private_key: process.env.FIREBASE_PRIVATE_KEY,
+            client_email: process.env.FIREBASE_CLIENT_EMAIL,
+            client_id: process.env.FIREBASE_CLIENT_ID,
+            auth_uri: process.env.FIREBASE_AUTH_URI,
+            token_uri: process.env.FIREBASE_TOKEN_URI,
+            auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER,
+            client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT,
+            universe_domain: process.env.UNIVERSE_DOMAIN,
+        },
+        sendgridApiKey: process.env.SENDGRID_API_KEY,
     };
 };
 
