@@ -33,7 +33,6 @@ jobs:
                   username: ${{ secrets.USER }}
                   key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
                   port: ${{ secrets.SSH_PORT }}
-                  proxy_passphrase: ${{ secrets.SSH_PROXY_PASSPHRASE }}
                   script_stop: true
                   script: |
                       export NVM_DIR=~/.nvm
