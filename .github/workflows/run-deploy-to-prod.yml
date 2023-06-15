@@ -35,9 +35,4 @@ jobs:
                   port: ${{ secrets.SSH_PORT }}
                   script_stop: true
                   script: |
-                      export NVM_DIR=~/.nvm
-                      source ~/.nvm/nvm.sh
-                      cd zenitha-api
-                      git pull https://AbdRaqeeb:${{ secrets.PROJECT_TOKEN }}@github.com/PathfinderHQ/zenitha-api main
-                      yarn build
-                      pm2 reload zenitha --watch --update-env
+                      ./script.sh
