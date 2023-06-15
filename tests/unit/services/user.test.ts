@@ -1,15 +1,22 @@
 import { faker } from '@faker-js/faker';
-import { newUserStore } from '../../../src/services';
-import { UserCreate, UserService } from '../../../src/types';
-import { createUser, DB, disconnectDatabase } from '../../utils';
-import { SignInProvider } from '../../../src/types/enums';
+import { emailService, newOtpStore, newUserStore } from '../../../src/services';
+import { EmailService, OtpService, UserCreate, UserService } from '../../../src/types';
+import { createUser, DB, disconnectDatabase, sendgridSuccessResult } from '../../utils';
+import { OtpType, SignInProvider } from '../../../src/types/enums';
 import { generateId, generateRandomString } from '../../../src/lib';
+import { sgMail } from '../../../src/services/email/sendgrid';
 
 describe('User Service', () => {
     let userService: UserService;
+    let appEmailService: EmailService;
+    let otpService: OtpService;
 
     beforeAll(() => {
-        userService = newUserStore({ DB });
+        appEmailService = emailService();
+        userService = newUserStore({ DB, appEmailService });
+        otpService = newOtpStore({ DB, appEmailService });
+
+        jest.spyOn(sgMail, 'send').mockResolvedValue(sendgridSuccessResult);
     });
 
     describe('Create User', () => {
@@ -18,6 +25,7 @@ describe('User Service', () => {
                 email: faker.internet.email(),
                 sign_in_provider: SignInProvider.CUSTOM,
                 password: '@Password2023',
+                verified: false,
             };
 
             const result = await userService.create(data);
@@ -39,13 +47,46 @@ describe('User Service', () => {
 
             expect(result.password).toEqual(expect.not.stringMatching(data.password));
         });
+
+        it('should create otp', async () => {
+            const data: UserCreate = {
+                email: faker.internet.email(),
+                sign_in_provider: SignInProvider.CUSTOM,
+                password: '@Password2023',
+            };
+
+            const user = await userService.create(data);
+
+            const result = await otpService.get({ user: user.id, type: OtpType.VERIFY_EMAIL });
+
+            expect(result).toMatchObject({ user: user.id, type: OtpType.VERIFY_EMAIL });
+            expect(result.otp).toBeDefined();
+        });
+
+        it('should send email', async () => {
+            const data: UserCreate = {
+                email: faker.internet.email(),
+                sign_in_provider: SignInProvider.CUSTOM,
+                password: '@Password2023',
+            };
+
+            await userService.create(data);
+
+            const emailSpy = jest.spyOn(sgMail, 'send');
+
+            expect(emailSpy).toHaveBeenCalled();
+        });
     });
 
     describe('Get User', () => {
         it('should get a user', async () => {
             const { user } = await createUser(DB);
 
-            const result = await userService.get({ id: user.id });
+            const result = await userService.get({
+                id: user.id,
+                verified: false,
+                sign_in_provider: SignInProvider.CUSTOM,
+            });
 
             expect(result).toMatchObject(user);
         });
