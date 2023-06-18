@@ -15,9 +15,6 @@ COPY . /app
 # build the app
 RUN yarn build
 
-# Run migrations
-RUN npx knex migrate:latest
-
 EXPOSE 3000
 
 CMD ["yarn", "start"]
