@@ -43,4 +43,4 @@ export const handleGoogleAuthError = (res: Response, error: CustomError): Respon
 
 export const generateJSONFromBase64 = (base64Data: string) => {
     return Buffer.from(base64Data, 'base64').toString('utf8');
-}
+};
