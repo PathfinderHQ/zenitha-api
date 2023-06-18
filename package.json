@@ -10,7 +10,7 @@
         "test:coverage": "jest --coverage --forceExit",
         "build": "tsc -p .",
         "serve": "node dist/index.js",
-        "start": "yarn build && yarn run serve",
+        "start": "yarn run serve",
         "dev": "nodemon src/index.ts",
         "prettier:fix": "prettier --write .",
         "lint": "eslint . --ext .js --ext .ts",

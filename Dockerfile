@@ -1,11 +1,23 @@
 FROM node:18.16.0-alpine
 
-WORKDIR /usr/src/app
-COPY package*.json ./
+RUN mkdir /app/
 
-COPY ["package*.json", "./"]
-RUN ls
-RUN npm install
+# Set the working directory in the container
+WORKDIR /app/
+
+COPY package.json yarn.lock tsconfig.json ./
+
+# install dependencies
+RUN yarn install
 
 COPY . /app
-RUN ls
+
+# build the app
+RUN yarn build
+
+# Run migrations
+RUN npx knex migrate:latest
+
+EXPOSE 3000
+
+CMD ["yarn", "start"]
