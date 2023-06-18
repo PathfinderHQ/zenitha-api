@@ -1,5 +1,6 @@
 import * as firebase from 'firebase-admin';
 import Config, { NODE_ENV } from '../config';
+import { generateJSONFromBase64 } from './custom';
 
 const firebaseConfig = {
     type: Config.firebase.type,
@@ -14,7 +15,7 @@ const firebaseConfig = {
     client_x509_cert_url: Config.firebase.client_x509_cert_url,
 };
 
-const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
+const serviceAccount = NODE_ENV.DEVELOPMENT ? JSON.parse(JSON.stringify(firebaseConfig)) : generateJSONFromBase64(Config.firebaseBase64);
 
 // do not initialise app in test environment
 if (Config.nodeEnv !== NODE_ENV.TEST) {
