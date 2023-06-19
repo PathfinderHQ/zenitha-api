@@ -15,7 +15,7 @@ const firebaseConfig = {
     client_x509_cert_url: Config.firebase.client_x509_cert_url,
 };
 
-const serviceAccount = NODE_ENV.DEVELOPMENT
+const serviceAccount = Config.nodeEnv === NODE_ENV.DEVELOPMENT
     ? JSON.parse(JSON.stringify(firebaseConfig))
     : generateJSONFromBase64(Config.firebaseBase64);
 
