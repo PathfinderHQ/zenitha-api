@@ -89,7 +89,7 @@ const errorSerializer = (err: Error) => {
 
 export class LogService {
     private static instance: LogService;
-    private transport: LogTransport;
+    public transport: LogTransport;
     readonly logger: Logger;
 
     constructor(transport: LogTransport = consoleTransport) {

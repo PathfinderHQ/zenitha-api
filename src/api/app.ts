@@ -4,6 +4,7 @@ import { logRequestMiddleware } from '../config/log';
 import { connection, createMysqlAdapter } from '../database';
 import * as services from '../services';
 import { authHTTPService } from './auth';
+import { logHTTPService } from './log';
 
 const startExpressApp = (): Application => {
     const app = express();
@@ -57,6 +58,7 @@ export const createNewServer = (): Server => {
 
     // mount auth endpoints
     authHTTPService(server).registerAuthRoutes(router);
+    logHTTPService().registerLogRoutes(router);
 
     app.use('/', router);
 
