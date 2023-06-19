@@ -16,9 +16,9 @@ const firebaseConfig = {
 };
 
 const serviceAccount =
-    Config.nodeEnv === NODE_ENV.DEVELOPMENT
-        ? JSON.parse(JSON.stringify(firebaseConfig))
-        : generateJSONFromBase64(Config.firebaseBase64);
+    Config.nodeEnv === NODE_ENV.PRODUCTION
+        ? generateJSONFromBase64(Config.firebaseBase64)
+        : JSON.parse(JSON.stringify(firebaseConfig));
 
 // do not initialise app in test environment
 if (Config.nodeEnv !== NODE_ENV.TEST) {
