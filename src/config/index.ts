@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 export enum NODE_ENV {
     DEVELOPMENT = 'development',
-    PRODUCT = 'production',
+    PRODUCTION = 'production',
     TEST = 'test',
 }
 
@@ -51,6 +51,7 @@ export interface Config {
         client_x509_cert_url: string;
         universe_domain: string;
     };
+    firebaseBase64: string;
     sendgridApiKey: string;
 }
 
@@ -87,6 +88,7 @@ export const getConfig = (): Config => {
             client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT,
             universe_domain: process.env.UNIVERSE_DOMAIN,
         },
+        firebaseBase64: process.env.FIREBASE_BASE64,
         sendgridApiKey: process.env.SENDGRID_API_KEY,
     };
 };
