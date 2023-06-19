@@ -27,7 +27,7 @@ jobs:
               with:
                   args: # pick the app name from the step above
                       'deploy --app ${{ steps.app_name.outputs.value }}-staging
-                      --remote-only && fly ssh console -a ${{ steps.app_name.outputs.value }}-staging --command "sh ./script.sh"'
+                      --remote-only'
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
