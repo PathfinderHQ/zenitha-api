@@ -17,6 +17,7 @@ import {
     loginSchema,
     registerSchema,
     resetPasswordSchema,
+    updateProfileSchema,
     verifyEmailSchema,
 } from '../validations';
 import { EmailTypes, OtpType, SignInProvider } from '../types/enums';
@@ -40,6 +41,7 @@ export const authHTTPService = (server: Server) => {
         // uses middleware to identify user using the jwt
         router.post('/user/resend_verify', isAuthenticatedUser, resendVerifyEmailOtp);
         router.get('/user', isAuthenticatedUser, getLoggedInUser);
+        router.put('/user', isAuthenticatedUser, updateProfile);
     };
 
     /**
@@ -306,6 +308,22 @@ export const authHTTPService = (server: Server) => {
             return successResponse(res, HttpStatusCode.OK, 'Password changed', user);
         } catch (err) {
             return serverErrorResponse(res, 'ChangePassword', err);
+        }
+    };
+
+    const updateProfile = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { error, value } = await validateSchema(updateProfileSchema, req.body);
+
+            if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
+
+            const user = await server.userService.update({ id: req.user.id }, value);
+
+            delete user.password;
+
+            return successResponse(res, HttpStatusCode.OK, 'User updated', user);
+        } catch (err) {
+            return serverErrorResponse(res, 'UpdateProfile', err);
         }
     };
 

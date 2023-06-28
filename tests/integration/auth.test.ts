@@ -295,6 +295,42 @@ describe('Authentication Endpoint', () => {
         });
     });
 
+    describe('Update Profile', () => {
+        it('should update profile', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+            };
+
+            const response = await server().put('/user').send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(response.status).toEqual(HttpStatusCode.OK);
+            expect(response.body).toMatchObject({
+                data: {
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    email: data.email,
+                },
+            });
+        });
+
+        it('should fail for bad payload', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {
+                book: faker.person.firstName(),
+            };
+
+            const response = await server().put('/user').send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(response.status).toBe(HttpStatusCode.BAD_REQUEST);
+            expect(response.body.message).toBe(`Unknown/Unexpected parameter: 'book'`);
+        });
+    });
+
     afterAll(async () => {
         await disconnectDatabase();
     });
