@@ -28,6 +28,11 @@ interface ChangePasswordSchema {
     new_password: string;
 }
 
+interface UpdateProfileSchema {
+    first_name: string;
+    last_name: string;
+}
+
 export const registerSchema: ObjectSchema<AuthPayload> = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().pattern(new RegExp(PASSWORD_REGEX)).required(),
@@ -58,4 +63,10 @@ export const verifyEmailSchema: ObjectSchema<VerifyEmail> = Joi.object({
 export const changePasswordSchema: ObjectSchema<ChangePasswordSchema> = Joi.object({
     password: Joi.string().required(),
     new_password: Joi.string().pattern(new RegExp(PASSWORD_REGEX)).required(),
+});
+
+export const updateProfileSchema: ObjectSchema<UpdateProfileSchema> = Joi.object({
+    first_name: Joi.string().optional(),
+    last_name: Joi.string().optional(),
+    email: Joi.string().email().optional(),
 });
