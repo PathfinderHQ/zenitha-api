@@ -1,21 +1,3 @@
-process.env.NODE_ENV = 'test';
-process.env.PORT = 4000;
-process.env.JWT_EXPIRY = '1y';
-process.env.JWT_SECRET = 'someverylongpassword';
-process.env.DATABASE_NAME = 'zenithatesting';
-process.env.DATABASE_USER = 'root';
-process.env.DATABASE_PASS = 'testPassword';
-process.env.DATABASE_HOST = 'localhost';
-process.env.LOG_URL = 'mongodb://localhost:27017/zenitha';
-process.env.FIREBASE_TYPE = 'test';
-process.env.FIREBASE_PROJECT_ID = 'test';
-process.env.FIREBASE_PRIVATE_KEY_ID = 'test';
-process.env.FIREBASE_PRIVATE_KEY = 'test';
-process.env.FIREBASE_CLIENT_EMAIL = 'test';
-process.env.FIREBASE_CLIENT_ID = 'test';
-process.env.FIREBASE_AUTH_URI = 'test';
-process.env.FIREBASE_TOKEN_URI = 'test';
-process.env.FIREBASE_AUTH_PROVIDER = 'test';
-process.env.FIREBASE_CLIENT_CERT = 'test';
-process.env.UNIVERSE_DOMAIN = 'test';
-process.env.SENDGRID_API_KEY = 'SG.test';
+require('dotenv').config({
+    path: './tests/utils/.env.test',
+});

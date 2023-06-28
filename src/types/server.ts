@@ -2,6 +2,8 @@ import express, { Request as ExpressRequest, Response as ExpressResponse, Applic
 import { User, UserService } from './user';
 import { EmailService } from './email';
 import { OtpService } from './otp';
+import { CategoryService } from './category';
+import { TaskService } from './task';
 
 export interface Request extends ExpressRequest {
     request_id: string;
@@ -17,6 +19,8 @@ export interface Server {
     userService: UserService;
     appEmailService: EmailService;
     otpService: OtpService;
+    categoryService: CategoryService;
+    taskService: TaskService;
 }
 
 export { Router, NextFunction, Application } from 'express';

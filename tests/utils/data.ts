@@ -1,10 +1,10 @@
 import { Knex } from 'knex';
 import { faker } from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
-import { Otp, OtpCreate, User, UserCreate } from '../../src/types';
+import { Category, CategoryCreate, Otp, OtpCreate, Task, TaskCreate, User, UserCreate } from '../../src/types';
 import { EmailTypes, OtpType, SignInProvider } from '../../src/types/enums';
 import { issueToken } from '../../src/lib';
-import { emailService, newOtpStore, newUserStore } from '../../src/services';
+import { emailService, newCategoryStore, newOtpStore, newTaskStore, newUserStore } from '../../src/services';
 
 export const TEST_PASSWORD = '@Password2023';
 export const TEST_PASSWORD_CHANGED = '@Password12345';
@@ -71,6 +71,61 @@ export const createOtp = async (
         const otp = await otpService.get({ user: user.id, type: OtpType.RESET_PASSWORD });
 
         return { user, data, token, emailType, otp };
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const createCategory = async (
+    DB: Knex
+): Promise<{
+    user: User;
+    category: Category;
+    data: CategoryCreate;
+    token: string;
+}> => {
+    try {
+        const { user, token } = await createUser(DB);
+        const categoryService = newCategoryStore({ DB });
+
+        const data: CategoryCreate = {
+            name: faker.word.noun(),
+            user: user.id,
+        };
+
+        const category = await categoryService.create(data);
+
+        return { category, data, user, token };
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const createTask = async (
+    DB: Knex
+): Promise<{
+    user: User;
+    category: Category;
+    task: Task;
+    data: TaskCreate;
+    token: string;
+}> => {
+    try {
+        const { user, category, token } = await createCategory(DB);
+        const taskService = newTaskStore({ DB });
+
+        const data: TaskCreate = {
+            user: user.id,
+            title: faker.word.words(),
+            description: faker.word.words(),
+            time: new Date(),
+            completed: false,
+            category: category.id,
+        };
+
+        const task = await taskService.create(data);
+
+        return { category, data, user, task, token };
     } catch (err) {
         console.log(err);
     }

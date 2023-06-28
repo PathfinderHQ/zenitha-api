@@ -3,8 +3,7 @@ import Config from '../config';
 import { logRequestMiddleware } from '../config/log';
 import { connection, createMysqlAdapter } from '../database';
 import * as services from '../services';
-import { authHTTPService } from './auth';
-import { logHTTPService } from './log';
+import * as httpService from '../api';
 
 const startExpressApp = (): Application => {
     const app = express();
@@ -40,25 +39,25 @@ export const createNewServer = (): Server => {
 
     // create required services
     const appEmailService = services.emailService();
-    const otpService = services.newOtpStore({ DB, appEmailService });
-    const userService = services.newUserStore({ DB, appEmailService });
 
     // build server object with all the required services
     const server: Server = {
         app,
-        userService,
         appEmailService,
-        otpService,
+        userService: services.newUserStore({ DB, appEmailService }),
+        otpService: services.newOtpStore({ DB, appEmailService }),
+        categoryService: services.newCategoryStore({ DB }),
+        taskService: services.newTaskStore({ DB }),
     };
 
     // create the express router
     const router = express.Router();
 
     // mount routes
-
-    // mount auth endpoints
-    authHTTPService(server).registerAuthRoutes(router);
-    logHTTPService().registerLogRoutes(router);
+    httpService.authHTTPService(server).registerAuthRoutes(router);
+    httpService.logHTTPService().registerLogRoutes(router);
+    httpService.categoryHTTPService(server).registerCategoryRoutes(router);
+    httpService.taskHTTPService(server).registerTaskRoutes(router);
 
     app.use('/', router);
 
