@@ -1,11 +1,11 @@
 import pino, { Logger } from 'pino';
 
 import {
-    Log,
     ILog,
+    Log,
     LogLevels,
-    LogTypes,
     LogTransport,
+    LogTypes,
     LogWriteObject,
     NextFunction,
     Request,
@@ -13,7 +13,7 @@ import {
     UnknownObject,
 } from '../types';
 import { generateRandomString } from '../lib';
-import Config from '../config';
+import Config, { NODE_ENV } from '../config';
 import { createMongoDBAdapter, LogModel } from '../database';
 
 export const formatLogResults = (results: ILog[] = []): Log[] => {
@@ -102,6 +102,7 @@ export class LogService {
             {
                 name: 'zenitha',
                 redact: ['password', 'body.password', 'body.new_password'],
+                level: Config.nodeEnv === NODE_ENV.TEST ? LogLevels.fatal : LogLevels.info,
             },
             transport
         );
