@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { faker } from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
+import * as dateFns from 'date-fns';
 import { Category, CategoryCreate, Otp, OtpCreate, Task, TaskCreate, User, UserCreate } from '../../src/types';
 import { EmailTypes, OtpType, SignInProvider } from '../../src/types/enums';
 import { issueToken } from '../../src/lib';
@@ -118,12 +119,12 @@ export const createTask = async (
             user: user.id,
             title: faker.word.words(),
             description: faker.word.words(),
-            time: new Date(),
+            time: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             completed: false,
             category: category.id,
         };
 
-        const task = await taskService.create(data);
+        const [task] = await taskService.create([data]);
 
         return { category, data, user, task, token };
     } catch (err) {
@@ -144,3 +145,22 @@ export const issueBadToken = (): string => {
 export const sendgridSuccessResult = [{ statusCode: 200 }, {}] as any;
 
 export const sendgridErrorResult = [{ statusCode: 400 }, {}] as any;
+
+export const chatCompletionSuccessResult = {
+    data: {
+        choices: [
+            {
+                message: {
+                    content:
+                        '[{ "title": "Visit Grandma", "description": "I wish to visit my grandma", "time": "2023-06-30 14:00:00" }]',
+                },
+            },
+        ],
+    },
+} as any;
+
+export const chatCompletionErrorResult = {
+    response: {
+        data: { message: 'Invalid API Key' },
+    },
+} as any;

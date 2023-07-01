@@ -13,6 +13,8 @@ export const ZENITHA_NO_REPLY = {
     name: 'Zenitha',
 };
 
+export const AI_MODEL = 'gpt-3.5-turbo';
+
 export enum HttpStatusCode {
     OK = 200,
     CREATED = 201,
@@ -53,6 +55,7 @@ export interface Config {
     };
     firebaseBase64: string;
     sendgridApiKey: string;
+    openAiApiKey: string;
 }
 
 export const getConfig = (): Config => {
@@ -90,6 +93,7 @@ export const getConfig = (): Config => {
         },
         firebaseBase64: process.env.FIREBASE_BASE64,
         sendgridApiKey: process.env.SENDGRID_API_KEY,
+        openAiApiKey: process.env.OPENAI_API_KEY,
     };
 };
 

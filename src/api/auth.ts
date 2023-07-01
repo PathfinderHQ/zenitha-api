@@ -98,6 +98,13 @@ export const authHTTPService = (server: Server) => {
             // return error if the user does not exist
             if (!foundUser) return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Invalid email/password');
 
+            // make sure the user is not google authenticated,
+            // otherwise the user needs to be signed in using google
+            // google signed in user do not have password
+            if (foundUser.google_user_id) {
+                return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Please sign in with google');
+            }
+
             // check if the password is correct
             // since we hash the password before saving to the database
             // this function hashes the password that is passed in req.body

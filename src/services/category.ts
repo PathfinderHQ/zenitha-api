@@ -43,7 +43,8 @@ const findCategoryQuery = (db: Knex, filter: CategoryFilter): Knex.QueryBuilder 
     const query = db(CATEGORIES).select('id', 'name', 'user', 'created_at', 'updated_at');
 
     if (filter.id) query.where('id', filter.id);
-    if (filter.user) query.where('user', filter.user).orWhereNull('user');
+    if (filter.user) query.where('user', filter.user);
+    if (filter.user_or_null) query.where('user', filter.user_or_null).orWhereNull('user');
     if (filter.name) query.where(db.raw('lower(name)'), '=', filter.name.toLowerCase());
 
     return query;

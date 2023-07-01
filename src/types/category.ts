@@ -10,7 +10,9 @@ export type CategoryCreate = Pick<Category, 'name' | 'user'>;
 
 export type CategoryUpdate = Pick<Category, 'name'>;
 
-export type CategoryFilter = Partial<Omit<Category, 'created_at' | 'updated_at'>>;
+export type CategoryFilter = Partial<Omit<Category, 'created_at' | 'updated_at'>> & {
+    user_or_null?: string;
+};
 
 export interface CategoryService {
     create(data: CategoryCreate): Promise<Category>;

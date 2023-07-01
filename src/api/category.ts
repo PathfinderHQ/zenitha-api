@@ -42,7 +42,10 @@ export const categoryHTTPService = (server: Server) => {
 
     const listCategories = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const categories = await server.categoryService.list({ ...req.query, user: req.user.id });
+            const categories = await server.categoryService.list({
+                ...req.query,
+                user_or_null: req.user.id,
+            });
 
             return successResponse(res, HttpStatusCode.OK, 'Categories retrieved', categories);
         } catch (err) {
@@ -56,7 +59,13 @@ export const categoryHTTPService = (server: Server) => {
 
             if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
 
-            const updatedCategory = await server.categoryService.update({ id: req.params.id }, value);
+            const updatedCategory = await server.categoryService.update(
+                {
+                    id: req.params.id,
+                    user: req.user.id,
+                },
+                value
+            );
 
             if (!updatedCategory) return errorResponse(res, HttpStatusCode.NOT_FOUND, 'Category not found');
 
@@ -68,12 +77,18 @@ export const categoryHTTPService = (server: Server) => {
 
     const deleteCategory = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const category = await server.categoryService.get({ id: req.params.id });
+            const category = await server.categoryService.get({
+                id: req.params.id,
+                user: req.user.id,
+            });
 
             if (!category) return errorResponse(res, HttpStatusCode.NOT_FOUND, 'Category not found');
 
             // delete the category
-            await server.categoryService.remove({ id: req.params.id });
+            await server.categoryService.remove({
+                id: req.params.id,
+                user: req.user.id,
+            });
 
             return successResponse(res, HttpStatusCode.OK, 'Category deleted');
         } catch (err) {
