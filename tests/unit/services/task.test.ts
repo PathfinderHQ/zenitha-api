@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import * as dateFns from 'date-fns';
 import { createTask, createUser, DB, disconnectDatabase } from '../../utils';
 import { TaskCreate, TaskService } from '../../../src/types';
 import { newTaskStore } from '../../../src/services';
@@ -19,10 +20,10 @@ describe('Task Service', () => {
                 user: user.id,
                 title: faker.word.words(),
                 description: faker.word.words(),
-                time: new Date(),
+                time: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             };
 
-            const result = await taskService.create(data);
+            const [result] = await taskService.create([data]);
 
             expect(result).toMatchObject({
                 user: data.user,
@@ -66,7 +67,7 @@ describe('Task Service', () => {
                 completed: true,
                 user: generateId(),
                 category: generateId(),
-                time: new Date(),
+                time: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             });
 
             expect(result).toEqual(expect.arrayContaining([]));

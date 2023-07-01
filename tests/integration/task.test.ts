@@ -2,8 +2,26 @@ import { faker } from '@faker-js/faker';
 import * as dateFns from 'date-fns';
 import { HttpStatusCode } from '../../src/config';
 import { createCategory, createTask, createUser, DB, disconnectDatabase, server } from '../utils';
-import { generateId } from '../../src/lib';
+import { generateId, generateRandomString } from '../../src/lib';
 import { TASK_DESCRIPTION_MAX_LENGTH, TASK_TITLE_MAX_LENGTH } from '../../src/validations';
+
+jest.mock('../../src/lib', () => {
+    const originalModule = jest.requireActual('../../src/lib');
+    return {
+        ...originalModule,
+        generateTasksFromTextInput: jest
+            .fn()
+            .mockResolvedValueOnce([
+                {
+                    title: 'Visit Grandma',
+                    description: 'I wish to visit my grandma',
+                    time: '2023-06-30 14:00:00',
+                },
+            ])
+            .mockResolvedValueOnce([])
+            .mockRejectedValueOnce({}),
+    };
+});
 
 describe('Task Routes', () => {
     describe('Create Task', () => {
@@ -204,6 +222,62 @@ describe('Task Routes', () => {
 
             expect(result.status).toBe(HttpStatusCode.NOT_FOUND);
             expect(result.body.message).toBe('Task not found');
+        });
+    });
+
+    describe('Generate Tasks From Input', () => {
+        it('should create generated tasks', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {
+                content: generateRandomString(),
+            };
+
+            const result = await server().post(`/tasks/automated`).send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(result.status).toBe(HttpStatusCode.CREATED);
+            expect(result.body.data[0]).toMatchObject({
+                title: 'Visit Grandma',
+                description: 'I wish to visit my grandma',
+                time: '2023-06-30 14:00:00',
+            });
+        });
+
+        it('should return rephrase your input', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {
+                content: generateRandomString(),
+            };
+
+            const result = await server().post(`/tasks/automated`).send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(result.status).toBe(HttpStatusCode.BAD_REQUEST);
+            expect(result.body.message).toBe('Please rephrase your input');
+        });
+
+        it('should fail for bad payload', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {};
+
+            const result = await server().post(`/tasks/automated`).send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(result.status).toBe(HttpStatusCode.BAD_REQUEST);
+            expect(result.body.message).toBe('content is required');
+        });
+
+        it('should return server error', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {
+                content: generateRandomString(),
+            };
+
+            const result = await server().post(`/tasks/automated`).send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(result.status).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+            expect(result.body.message).toBe('Internal Server Error');
         });
     });
 

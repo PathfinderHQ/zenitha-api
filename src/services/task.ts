@@ -1,5 +1,4 @@
 import { Knex } from 'knex';
-import * as dateFns from 'date-fns';
 import { Task, TaskCreate, TaskUpdate, TaskFilter, TaskService } from '../types';
 import { TASKS } from '../database';
 import { generateId } from '../lib';
@@ -9,12 +8,21 @@ interface TaskStore {
 }
 
 export const newTaskStore = (ts: TaskStore): TaskService => {
-    const create = async (data: TaskCreate): Promise<Task> => {
-        const id = generateId();
+    const create = async (data: TaskCreate[]): Promise<Task[]> => {
+        const ids: string[] = [];
 
-        await ts.DB(TASKS).insert({ ...data, id });
+        // add id to tasks
+        const tasks = data.map((task) => {
+            const id = generateId();
 
-        return get({ id });
+            ids.push(id);
+
+            return { ...task, id };
+        });
+
+        await ts.DB(TASKS).insert(tasks);
+
+        return list({ ids });
     };
 
     const get = async (filter: TaskFilter): Promise<Task> => {
@@ -56,11 +64,12 @@ const findTaskQuery = (db: Knex, filter: TaskFilter): Knex.QueryBuilder => {
     );
 
     if (filter.id) query.where('id', filter.id);
+    if (filter.ids) query.whereIn('id', filter.ids);
     if (filter.user) query.where('user', filter.user);
     if (filter.category) query.where('category', filter.category);
     if (filter.completed) query.where('completed', filter.completed);
     if (filter.title) query.where(db.raw('lower(title)'), '=', filter.title.toLowerCase());
-    if (filter.time) query.where('time', '>=', dateFns.format(new Date(filter.time), 'yyyy-MM-dd HH:mm:ss'));
+    if (filter.time) query.where('time', 'like', `%${filter.time}%`);
 
     return query;
 };

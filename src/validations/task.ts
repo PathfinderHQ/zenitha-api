@@ -31,3 +31,7 @@ export const updateTaskSchema: ObjectSchema<TaskUpdate> = Joi.object({
     category: Joi.string().optional(),
     completed: Joi.boolean().optional(),
 });
+
+export const generateTaskSchema: ObjectSchema<{ content: string }> = Joi.object({
+    content: Joi.string().required(),
+});
