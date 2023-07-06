@@ -1,6 +1,7 @@
 export interface Category {
     id: string;
     name: string;
+    color: string;
     user?: string;
     created_at: Date;
     updated_at: Date;
@@ -8,7 +9,7 @@ export interface Category {
 
 export type CategoryCreate = Pick<Category, 'name' | 'user'>;
 
-export type CategoryUpdate = Pick<Category, 'name'>;
+export type CategoryUpdate = Partial<Pick<Category, 'name' | 'color'>>;
 
 export type CategoryFilter = Partial<Omit<Category, 'created_at' | 'updated_at'>> & {
     user_or_null?: string;

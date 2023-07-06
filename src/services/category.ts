@@ -40,7 +40,7 @@ export const newCategoryStore = (cs: CategoryStore): CategoryService => {
 };
 
 const findCategoryQuery = (db: Knex, filter: CategoryFilter): Knex.QueryBuilder => {
-    const query = db(CATEGORIES).select('id', 'name', 'user', 'created_at', 'updated_at');
+    const query = db(CATEGORIES).select('*');
 
     if (filter.id) query.where('id', filter.id);
     if (filter.user) query.where('user', filter.user);
