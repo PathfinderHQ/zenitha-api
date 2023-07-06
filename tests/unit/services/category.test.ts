@@ -19,7 +19,7 @@ describe('Category Service', () => {
 
             const result = await categoryService.create(data);
 
-            expect(result).toMatchObject({ name: data.name });
+            expect(result).toMatchObject({ name: data.name, color: '#000000' });
         });
     });
 
@@ -58,12 +58,14 @@ describe('Category Service', () => {
 
             const data = {
                 name: faker.word.noun(),
+                color: '#FFFFFF',
             };
 
             const result = await categoryService.update({ id: category.id }, data);
 
             expect(result).toMatchObject({
                 name: data.name,
+                color: data.color,
             });
         });
 

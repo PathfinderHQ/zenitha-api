@@ -81,6 +81,7 @@ describe('Category Routes', () => {
 
             const data = {
                 name: faker.word.noun(),
+                color: '#FFFFFF',
             };
 
             const result = await server()
@@ -89,7 +90,7 @@ describe('Category Routes', () => {
                 .set('Authorization', `Bearer ${token}`);
 
             expect(result.status).toBe(HttpStatusCode.OK);
-            expect(result.body.data).toMatchObject({ name: data.name });
+            expect(result.body.data).toMatchObject({ name: data.name, color: data.color });
         });
 
         it('should return category not found', async () => {
