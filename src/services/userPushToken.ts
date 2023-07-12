@@ -1,7 +1,6 @@
 import { Knex } from 'knex';
 import { UserPushTokenService, UserPushTokenCreate, UserPushToken, UserPushTokenFilter } from '../types';
 import { USER_PUSH_TOKENS } from '../database';
-import { generateId } from '../lib';
 
 export interface UserPushTokenStore {
     DB: Knex;
@@ -10,10 +9,9 @@ export interface UserPushTokenStore {
 export const newUserPushTokenStore = (upts: UserPushTokenStore): UserPushTokenService => {
     const create = async (data: UserPushTokenCreate): Promise<UserPushToken> => {
         return upts.DB.transaction(async (trx) => {
-            const id = Number(generateId());
-            await trx(USER_PUSH_TOKENS).insert({ id, ...data });
+            await trx(USER_PUSH_TOKENS).insert({ data });
 
-            const [userPushToken] = await userPushTokenQuery(trx, { id });
+            const [userPushToken] = await userPushTokenQuery(trx, data);
             return userPushToken;
         });
     };
