@@ -13,6 +13,7 @@ export interface UserPushTokenCreate {
 export interface UserPushTokenFilter {
     id?: number;
     user?: string;
+    push_token?: string;
 }
 
 export interface UserPushTokenService {

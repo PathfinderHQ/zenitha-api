@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
     await knex.raw(`
-        CREATE TABLE IF NOT EXISTS user_push_tokens (
+        CREATE TABLE IF NOT EXISTS userpushtokens(
             id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
             user CHAR(20) NOT NULL,
             push_token VARCHAR(255) NOT NULL,
@@ -15,5 +15,6 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-    await knex.raw(`DROP TABLE IF EXISTS user_push_tokens;`);
+    await knex.raw(`ALTER TABLE userpushtokens DROP FOREIGN KEY fk_user_pushToken_key;`);
+    await knex.raw(`DROP TABLE IF EXISTS userpushtokens;`);
 }
