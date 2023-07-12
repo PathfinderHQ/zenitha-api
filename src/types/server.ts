@@ -4,6 +4,7 @@ import { EmailService } from './email';
 import { OtpService } from './otp';
 import { CategoryService } from './category';
 import { TaskService } from './task';
+import { UserPushTokenService } from './userPushToken';
 
 export interface Request extends ExpressRequest {
     request_id: string;
@@ -21,6 +22,7 @@ export interface Server {
     otpService: OtpService;
     categoryService: CategoryService;
     taskService: TaskService;
+    UserPushToken: UserPushTokenService;
 }
 
 export { Router, NextFunction, Application } from 'express';
