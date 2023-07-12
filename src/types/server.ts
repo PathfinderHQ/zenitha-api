@@ -22,7 +22,7 @@ export interface Server {
     otpService: OtpService;
     categoryService: CategoryService;
     taskService: TaskService;
-    UserPushToken: UserPushTokenService;
+    userPushTokenService: UserPushTokenService;
 }
 
 export { Router, NextFunction, Application } from 'express';

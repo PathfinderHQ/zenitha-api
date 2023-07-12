@@ -48,6 +48,7 @@ export const createNewServer = (): Server => {
         otpService: services.newOtpStore({ DB, appEmailService }),
         categoryService: services.newCategoryStore({ DB }),
         taskService: services.newTaskStore({ DB }),
+        userPushTokenService: services.newUserPushTokenStore({ DB }),
     };
 
     // create the express router

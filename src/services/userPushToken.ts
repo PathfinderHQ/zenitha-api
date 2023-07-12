@@ -1,15 +1,13 @@
 import { Knex } from 'knex';
-import { EmailService, UserPushTokenService, UserPushTokenCreate, UserPushToken, UserPushTokenFilter } from '../types';
+import { UserPushTokenService, UserPushTokenCreate, UserPushToken, UserPushTokenFilter } from '../types';
 import { USER_PUSH_TOKENS } from '../database';
 import { generateId } from '../lib';
 
 export interface UserPushTokenStore {
     DB: Knex;
-    appEmailService: EmailService;
 }
 
 export const newUserPushTokenStore = (us: UserPushTokenStore): UserPushTokenService => {
-    // create a user push token
     const create = async (data: UserPushTokenCreate): Promise<UserPushToken> => {
         return us.DB.transaction(async (trx) => {
             const id = generateId();
@@ -19,12 +17,10 @@ export const newUserPushTokenStore = (us: UserPushTokenStore): UserPushTokenServ
         });
     };
 
-    // get list of user push tokens
     const list = async (filter: UserPushTokenFilter): Promise<UserPushToken[]> => {
         return userPushTokenQuery(us.DB, filter);
     };
 
-    // get a user push token
     const get = async (filter: UserPushTokenFilter): Promise<UserPushToken> => {
         const [userPushToken] = await userPushTokenQuery(us.DB, filter);
         return userPushToken;
