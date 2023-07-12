@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
         CONSTRAINT fk_user_pushToken_key
         FOREIGN KEY (user)
         REFERENCES users(id),
-
+        )
        `);
 }
 
