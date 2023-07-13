@@ -8,12 +8,10 @@ export interface UserPushTokenStore {
 
 export const newUserPushTokenStore = (upts: UserPushTokenStore): UserPushTokenService => {
     const create = async (data: UserPushTokenCreate): Promise<UserPushToken> => {
-        return upts.DB.transaction(async (trx) => {
-            await trx(USER_PUSH_TOKENS).insert(data);
+        await upts.DB(USER_PUSH_TOKENS).insert(data);
 
-            const [userPushToken] = await userPushTokenQuery(trx, data);
-            return userPushToken;
-        });
+        const [userPushToken] = await userPushTokenQuery(upts.DB, data);
+        return userPushToken;
     };
 
     const list = async (filter: UserPushTokenFilter): Promise<UserPushToken[]> => {
@@ -31,7 +29,6 @@ export const newUserPushTokenStore = (upts: UserPushTokenStore): UserPushTokenSe
 const userPushTokenQuery = (db: Knex | Knex.Transaction, filter: UserPushTokenFilter): Knex.QueryBuilder => {
     const query = db(USER_PUSH_TOKENS).select('*').orderBy('created_at', 'desc');
 
-    if (filter.id) query.where('id', filter.id);
     if (filter.user) query.where('user', filter.user);
     if (filter.push_token) query.where('push_token', filter.push_token);
     return query;
