@@ -4,7 +4,7 @@ import { EmailService } from './email';
 import { OtpService } from './otp';
 import { CategoryService } from './category';
 import { TaskService } from './task';
-import { UserPushTokenService } from './userPushToken';
+import { UserPushTokenService } from './user_push_token';
 
 export interface Request extends ExpressRequest {
     request_id: string;

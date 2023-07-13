@@ -3,4 +3,4 @@ export * from './email';
 export * from './otp';
 export * from './category';
 export * from './task';
-export * from './userPushToken';
+export * from './user_push_token';
