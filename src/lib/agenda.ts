@@ -1,6 +1,7 @@
 import Agenda, { Job, JobAttributesData } from 'agenda';
 import Config, { SEND_NOTIFICATION } from '../config';
 import { CronData } from '../types';
+import { Expo } from 'expo-server-sdk';
 
 export const agenda = new Agenda({
     db: { address: Config.cronUrl },
@@ -8,12 +9,14 @@ export const agenda = new Agenda({
 });
 
 type Notification = JobAttributesData & CronData;
+const expo = new Expo();
 
 agenda.define(SEND_NOTIFICATION, async (job: Job<Notification>) => {
-    const messages = [];
-    messages.push({
-        to: job.attrs.data.user_push_token,
-        sound: 'default',
-        body: job.attrs.data.summary,
-    });
+    await expo.sendPushNotificationsAsync([
+        {
+            to: job.attrs.data.user_push_token,
+            sound: 'default',
+            body: job.attrs.data.summary,
+        },
+    ]);
 });
