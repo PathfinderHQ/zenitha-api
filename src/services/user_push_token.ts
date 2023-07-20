@@ -7,10 +7,8 @@ export interface UserPushTokenStore {
 }
 
 export const newUserPushTokenStore = (upts: UserPushTokenStore): UserPushTokenService => {
-    const create = async (data: UserPushTokenCreate): Promise<UserPushToken> => {
+    const create = async (data: UserPushTokenCreate): Promise<void> => {
         await upts.DB(USER_PUSH_TOKENS).insert(data);
-
-        return get(data);
     };
 
     const list = async (filter: UserPushTokenFilter): Promise<UserPushToken[]> => {

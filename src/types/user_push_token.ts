@@ -17,7 +17,7 @@ export interface UserPushTokenFilter {
 }
 
 export interface UserPushTokenService {
-    create(data: UserPushTokenCreate): Promise<UserPushToken>;
+    create(data: UserPushTokenCreate): Promise<void>;
     list(filter: UserPushTokenFilter): Promise<UserPushToken[]>;
     get(filter: UserPushTokenFilter): Promise<UserPushToken>;
 }
