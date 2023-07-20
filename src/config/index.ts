@@ -15,6 +15,8 @@ export const ZENITHA_NO_REPLY = {
 
 export const AI_MODEL = 'gpt-3.5-turbo';
 
+export const SEND_NOTIFICATION = 'send notification';
+
 export enum HttpStatusCode {
     OK = 200,
     CREATED = 201,
@@ -40,6 +42,7 @@ export interface Config {
     jwtSecret: string;
     jwtExpiry: string;
     logUrl: string;
+    cronUrl: string;
     firebase: {
         type: string;
         project_id: string;
@@ -78,6 +81,7 @@ export const getConfig = (): Config => {
         jwtSecret: process.env.JWT_SECRET || '2 days',
         jwtExpiry: process.env.JWT_EXPIRY || 'woohoo',
         logUrl: process.env.LOG_URL || '',
+        cronUrl: process.env.CRON_URL,
         firebase: {
             type: process.env.FIREBASE_TYPE,
             project_id: process.env.FIREBASE_PROJECT_ID,
