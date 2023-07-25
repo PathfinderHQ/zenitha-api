@@ -24,6 +24,7 @@ jobs:
             DATABASE_PASS: testPassword
             JWT_EXPIRY: 1y
             JWT_SECRET: someverylongpassword
+            CRON_URL: ${{ secrets.CRON_URL }}
 
         services:
             mysql:

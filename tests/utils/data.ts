@@ -2,10 +2,27 @@ import { Knex } from 'knex';
 import { faker } from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
 import * as dateFns from 'date-fns';
-import { Category, CategoryCreate, Otp, OtpCreate, Task, TaskCreate, User, UserCreate } from '../../src/types';
+import {
+    Category,
+    CategoryCreate,
+    Otp,
+    OtpCreate,
+    Task,
+    TaskCreate,
+    User,
+    UserCreate,
+    UserPushTokenCreate,
+} from '../../src/types';
 import { EmailTypes, OtpType, SignInProvider } from '../../src/types/enums';
-import { issueToken } from '../../src/lib';
-import { emailService, newCategoryStore, newOtpStore, newTaskStore, newUserStore } from '../../src/services';
+import { issueToken, generateRandomString } from '../../src/lib';
+import {
+    emailService,
+    newCategoryStore,
+    newOtpStore,
+    newTaskStore,
+    newUserStore,
+    newUserPushTokenStore,
+} from '../../src/services';
 
 export const TEST_PASSWORD = '@Password2023';
 export const TEST_PASSWORD_CHANGED = '@Password12345';
@@ -127,6 +144,38 @@ export const createTask = async (
         const [task] = await taskService.create([data]);
 
         return { category, data, user, task, token };
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const createUserPushToken = async (
+    DB: Knex
+): Promise<{
+    user: User;
+    data: UserPushTokenCreate;
+    token: string;
+    push_token: string;
+}> => {
+    function generateExponentPushToken() {
+        const randomString = generateRandomString({ length: 22 });
+        return `ExponentPushToken[${randomString}]`;
+    }
+
+    try {
+        const userPushTokenService = newUserPushTokenStore({ DB });
+
+        const { user, token } = await createUser(DB);
+
+        const data: UserPushTokenCreate = {
+            user: user.id,
+            push_token: generateExponentPushToken(),
+        };
+
+        // store data in the database using the service
+        await userPushTokenService.create(data);
+
+        return { data, user, token, push_token: data.push_token };
     } catch (err) {
         console.log(err);
     }

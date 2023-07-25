@@ -5,6 +5,7 @@ import { OtpService } from './otp';
 import { CategoryService } from './category';
 import { TaskService } from './task';
 import { UserPushTokenService } from './user_push_token';
+import { CronService } from './cron';
 
 export interface Request extends ExpressRequest {
     request_id: string;
@@ -23,6 +24,7 @@ export interface Server {
     categoryService: CategoryService;
     taskService: TaskService;
     userPushTokenService: UserPushTokenService;
+    cronService: CronService;
 }
 
 export { Router, NextFunction, Application } from 'express';
