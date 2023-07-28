@@ -60,6 +60,7 @@ export const createNewServer = (): Server => {
     httpService.logHTTPService().registerLogRoutes(router);
     httpService.categoryHTTPService(server).registerCategoryRoutes(router);
     httpService.taskHTTPService(server).registerTaskRoutes(router);
+    httpService.userPushTokenHTTPService(server).registerUserPushTokenRoutes(router);
 
     app.use('/', router);
 
