@@ -9,7 +9,7 @@ describe('User Push Token Routes', () => {
 
             //valid push token
             const data = {
-                push_token: 'ExpoPushToken[]',
+                push_token: 'ExponentPushToken[gldwgqGnGKYXxdFWSM0jBo]',
             };
 
             const result = await server().post('/user-push-token').send(data).set('Authorization', `Bearer ${token}`);
@@ -17,7 +17,7 @@ describe('User Push Token Routes', () => {
             expect(result.status).toBe(HttpStatusCode.NO_CONTENT);
         });
 
-        it('should return 400 for bad payload', async () => {
+        it('should return 400 for invalid token', async () => {
             const { token } = await createUser(DB);
 
             const data = {
@@ -29,7 +29,19 @@ describe('User Push Token Routes', () => {
             expect(result.status).toBe(HttpStatusCode.BAD_REQUEST);
             expect(result.body.message).toBe('Push token is invalid');
         });
+
+        it('should return 400 for bad payload', async () => {
+            const { token } = await createUser(DB);
+
+            const data = {};
+
+            const result = await server().post('/user-push-token').send(data).set('Authorization', `Bearer ${token}`);
+
+            expect(result.status).toBe(HttpStatusCode.BAD_REQUEST);
+            expect(result.body.message).toBe('push_token is required');
+        });
     });
+
     afterAll(async () => {
         await disconnectDatabase();
     });

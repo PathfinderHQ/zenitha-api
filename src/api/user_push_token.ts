@@ -1,14 +1,14 @@
+import { Expo } from 'expo-server-sdk';
 import { Request, Response, Router, Server } from '../types';
 import { errorResponse, serverErrorResponse, validateSchema } from '../lib';
-import { HttpStatusCode } from 'src/config';
+import { HttpStatusCode } from '../config';
 import { middleware } from './middlewares';
-import { Expo } from 'expo-server-sdk';
-import { createPushTokenSchema } from 'src/validations';
+import { createPushTokenSchema } from '../validations';
 
 export const userPushTokenHTTPService = (server: Server) => {
     const { isAuthenticatedUser } = middleware(server);
 
-    const registerTokenRoutes = (router: Router) => {
+    const registerUserPushTokenRoutes = (router: Router) => {
         router.post('/user-push-token', isAuthenticatedUser, createUserPushToken);
     };
 
@@ -32,5 +32,6 @@ export const userPushTokenHTTPService = (server: Server) => {
             return serverErrorResponse(res, 'CreateUserPushToken', err);
         }
     };
-    return { registerTokenRoutes };
+
+    return { registerUserPushTokenRoutes };
 };
