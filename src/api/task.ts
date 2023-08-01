@@ -2,6 +2,7 @@ import { Request, Response, Router, Server, TaskCreate } from '../types';
 import { middleware } from './middlewares';
 import {
     errorResponse,
+    generateNotificationsFromTask,
     generateTasksFromTextInput,
     serverErrorResponse,
     successResponse,
@@ -35,7 +36,11 @@ export const taskHTTPService = (server: Server) => {
 
             const [task] = await server.taskService.create([{ ...value, user: req.user.id }]);
 
-            return successResponse(res, HttpStatusCode.CREATED, 'Task created', task);
+            successResponse(res, HttpStatusCode.CREATED, 'Task created', task);
+
+            if (req.user.push_token) {
+                generateNotificationsFromTask(value, req.user.push_token);
+            }
         } catch (err) {
             return serverErrorResponse(res, 'CreateTask', err);
         }
@@ -106,7 +111,7 @@ export const taskHTTPService = (server: Server) => {
 
             if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
 
-            const data = await generateTasksFromTextInput(value.content);
+            const data = await generateTasksFromTextInput(value.content, req.user.push_token);
 
             if (!data.length) {
                 return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Please rephrase your input');

@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { EmailService, User, UserCreate, UserFilter, UserService, UserUpdate } from '../types';
-import { OTPS, USERS } from '../database';
+import { OTPS, USER_PUSH_TOKENS, USERS } from '../database';
 import { generateId, generateOtp, hashPassword } from '../lib';
 import { EmailTypes, OtpType, SignInProvider } from '../types/enums';
 import { ZENITHA_NO_REPLY } from '../config';
@@ -88,12 +88,27 @@ export const newUserStore = (us: UserStore): UserService => {
 
 // Build our user database query dynamically
 const userQuery = (db: Knex | Knex.Transaction, filter: UserFilter): Knex.QueryBuilder => {
-    const query = db(USERS).select('*').orderBy('created_at', 'desc');
+    const query = db(`${USERS} as u`)
+        .leftJoin(`${USER_PUSH_TOKENS} as upt`, 'upt.user', 'u.id')
+        .select(
+            'u.id as id',
+            'u.first_name as first_name',
+            'u.last_name as last_name',
+            'u.email as email',
+            'u.password as password',
+            'u.sign_in_provider as sign_in_provider',
+            'u.google_user_id as google_user_id',
+            'u.verified as verified',
+            'u.created_at as created_at',
+            'u.updated_at as updated_at',
+            'upt.push_token'
+        )
+        .orderBy('created_at', 'desc');
 
-    if (filter.id) query.where('id', filter.id);
-    if (filter.email) query.where(db.raw('lower(email)'), '=', filter.email.toLowerCase());
-    if (filter.sign_in_provider) query.where('sign_in_provider', filter.sign_in_provider);
-    if (filter.verified) query.where('verified', filter.verified);
+    if (filter.id) query.where('u.id', filter.id);
+    if (filter.email) query.where(db.raw('lower(u.email)'), '=', filter.email.toLowerCase());
+    if (filter.sign_in_provider) query.where('u.sign_in_provider', filter.sign_in_provider);
+    if (filter.verified) query.where('u.verified', filter.verified);
 
     return query;
 };

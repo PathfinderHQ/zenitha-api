@@ -4,11 +4,13 @@ import { CronData } from '../types';
 import { Expo } from 'expo-server-sdk';
 
 export const agenda = new Agenda({
-    db: { address: Config.cronUrl },
-    processEvery: '30 seconds',
+    db: {
+        address: Config.cronUrl,
+    },
 });
 
 type Notification = JobAttributesData & CronData;
+
 const expo = new Expo();
 
 agenda.define(SEND_NOTIFICATION, async (job: Job<Notification>) => {

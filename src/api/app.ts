@@ -49,7 +49,6 @@ export const createNewServer = (): Server => {
         categoryService: services.newCategoryStore({ DB }),
         taskService: services.newTaskStore({ DB }),
         userPushTokenService: services.newUserPushTokenStore({ DB }),
-        cronService: services.newCronService(),
     };
 
     // create the express router
