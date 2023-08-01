@@ -37,4 +37,9 @@ export interface GeneratedTask {
     title: string;
     description: string;
     time: string;
+    summary: string;
+}
+
+export interface TaskSummary {
+    summary: string;
 }

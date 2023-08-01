@@ -15,6 +15,10 @@ export function validateSchema<T>(schema: ObjectSchema<T>, body: any, opts: any 
             },
         ] = error.details;
 
+        if (key === 'time' && errorType === 'custom') {
+            errorMessage = 'Time contains an invalid value. Format is: yyyy-MM-dd HH:mm:ss A';
+        }
+
         if (errorType === 'any.required') errorMessage = `${key} is required`;
 
         if (errorType === 'string.pattern.base' && key === 'password') {

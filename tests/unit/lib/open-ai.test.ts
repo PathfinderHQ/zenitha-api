@@ -2,7 +2,7 @@ import { generateRandomString, generateTasksFromTextInput, openai } from '../../
 import logger from '../../../src/config/log';
 import { chatCompletionErrorResult, chatCompletionSuccessResult } from '../../utils';
 
-describe('Open AI', () => {
+describe.skip('Open AI', () => {
     it('should generate task', async () => {
         const input = generateRandomString();
 

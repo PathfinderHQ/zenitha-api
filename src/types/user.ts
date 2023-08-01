@@ -11,6 +11,7 @@ export interface User {
     verified?: boolean;
     created_at: Date;
     updated_at: Date;
+    push_token?: string;
 }
 
 export interface UserCreate {
