@@ -15,8 +15,6 @@ export function validateSchema<T>(schema: ObjectSchema<T>, body: any, opts: any 
             },
         ] = error.details;
 
-        console.log(error.details);
-
         if (key === 'time' && errorType === 'custom') {
             errorMessage = 'Time contains an invalid value. Format is: yyyy-MM-dd HH:mm:ss A';
         }
