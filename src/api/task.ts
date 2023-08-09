@@ -2,7 +2,7 @@ import { Request, Response, Router, Server, TaskCreate } from '../types';
 import { middleware } from './middlewares';
 import {
     errorResponse,
-    generateNotificationsFromTask,
+    generateNotificationSummaryFromTask,
     generateTasksFromTextInput,
     serverErrorResponse,
     successResponse,
@@ -34,13 +34,17 @@ export const taskHTTPService = (server: Server) => {
                 if (!foundCategory) return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Invalid category');
             }
 
-            const [task] = await server.taskService.create([{ ...value, user: req.user.id }]);
+            const { summary } = await generateNotificationSummaryFromTask(value);
+
+            const [task] = await server.taskService.create([
+                {
+                    ...value,
+                    summary,
+                    user: req.user.id,
+                },
+            ]);
 
             successResponse(res, HttpStatusCode.CREATED, 'Task created', task);
-
-            if (req.user.push_token) {
-                generateNotificationsFromTask(value, req.user.push_token);
-            }
         } catch (err) {
             return serverErrorResponse(res, 'CreateTask', err);
         }
@@ -111,7 +115,7 @@ export const taskHTTPService = (server: Server) => {
 
             if (error) return errorResponse(res, HttpStatusCode.BAD_REQUEST, error);
 
-            const data = await generateTasksFromTextInput(value.content, req.user.push_token);
+            const data = await generateTasksFromTextInput(value.content);
 
             if (!data.length) {
                 return errorResponse(res, HttpStatusCode.BAD_REQUEST, 'Please rephrase your input');

@@ -1,9 +1,8 @@
-import { OpenAIApi, Configuration, ChatCompletionRequestMessage } from 'openai';
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
 import * as dateFns from 'date-fns';
 import Config, { AI_MODEL } from '../config';
 import logger from '../config/log';
 import { GeneratedTask, TaskCreate, TaskSummary } from '../types';
-import { scheduleTaskCronJob } from './cron';
 
 const configuration = new Configuration({
     apiKey: Config.openAiApiKey,
@@ -11,7 +10,7 @@ const configuration = new Configuration({
 
 export const openai = new OpenAIApi(configuration);
 
-export const generateTasksFromTextInput = async (input: string, pushToken?: string): Promise<Partial<TaskCreate>[]> => {
+export const generateTasksFromTextInput = async (input: string): Promise<Partial<TaskCreate>[]> => {
     try {
         const messages: ChatCompletionRequestMessage[] = [
             {
@@ -26,8 +25,8 @@ export const generateTasksFromTextInput = async (input: string, pushToken?: stri
                    } as array.
                    If the user does not provide time like 8 am or 9 pm. You can use your own time that suits the time based on the text,
                    for example, 8 am for morning, 2pm for afternoon and 9pm for evening. But feel free to use your initiative based on the
-                   context of the input. Meanwhile time should be in format "yyyy-MM-DD HH:mm:ss A". Use current date if date is not provided. 
-                   Current date is ${dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss A')}.
+                   context of the input. Meanwhile time should be in format "yyyy-MM-DD HH:mm:ss". Use current date if date is not provided. 
+                   Current date is ${dateFns.format(new Date(), 'yyyy-MM-ddTHH:mm:ss')}.
                    The summary should be human friendly message that describes the task title and description, it is meant to be a reminder message.
                    For example, It's almost time to play football. Do not use the example, task title and description directly.
                    Generate your own message from them and make sure important information from the title and description are mentioned for context.
@@ -47,21 +46,18 @@ export const generateTasksFromTextInput = async (input: string, pushToken?: stri
         const data: GeneratedTask[] = JSON.parse(completion.data.choices[0].message.content);
 
         return data.map((task) => {
-            if (pushToken) {
-                scheduleTaskCronJob(task.time, { summary: task.summary, user_push_token: pushToken });
-            }
-
             return {
                 title: task.title,
                 description: task.description,
-                time: dateFns.format(new Date(task.time), 'yyyy-MM-dd HH:mm:ss A'),
+                time: dateFns.format(new Date(task.time), 'yyyy-MM-dd HH:mm:ss'),
+                summary: task.summary,
             };
         });
     } catch (err) {
         logger.error(err, '[GenerateTasksFromTextInput]');
     }
 };
-export const generateNotificationsFromTask = async (input: Partial<TaskCreate>, pushToken: string): Promise<void> => {
+export const generateNotificationSummaryFromTask = async (input: Partial<TaskCreate>): Promise<TaskSummary> => {
     try {
         const messages: ChatCompletionRequestMessage[] = [
             {
@@ -88,12 +84,7 @@ export const generateNotificationsFromTask = async (input: Partial<TaskCreate>, 
             messages,
         });
 
-        const data: TaskSummary = JSON.parse(completion.data.choices[0].message.content);
-
-        await scheduleTaskCronJob(input.time, { summary: data.summary, user_push_token: pushToken });
-
-        // TODO: remove when done
-        await scheduleTaskCronJob('in 2 minutes', { summary: `A-${data.summary}`, user_push_token: pushToken });
+        return JSON.parse(completion.data.choices[0].message.content);
     } catch (err) {
         logger.error(err, '[generateNotificationsFromTask]');
     }
