@@ -20,6 +20,9 @@ jest.mock('../../src/lib', () => {
             ])
             .mockResolvedValueOnce([])
             .mockRejectedValueOnce({}),
+        generateNotificationSummaryFromTask: jest.fn().mockResolvedValueOnce({
+            summary: 'I wish to visit my grandma',
+        }),
     };
 });
 
