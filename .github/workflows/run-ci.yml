@@ -25,6 +25,7 @@ jobs:
             JWT_EXPIRY: 1y
             JWT_SECRET: someverylongpassword
             CRON_URL: ${{ secrets.CRON_URL }}
+            SENDGRID_API_KEY: SG.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
         services:
             mysql:
