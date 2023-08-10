@@ -4,6 +4,7 @@ export interface Task {
     category: string;
     title: string;
     description?: string;
+    summary: string;
     completed: boolean;
     time: string;
     created_at: Date;
@@ -17,6 +18,7 @@ export interface TaskCreate {
     description?: string;
     completed?: boolean;
     time?: string;
+    summary: string;
 }
 
 export type TaskUpdate = Partial<Omit<TaskCreate, 'user'>>;

@@ -57,6 +57,7 @@ const findTaskQuery = (db: Knex, filter: TaskFilter): Knex.QueryBuilder => {
         'category',
         'title',
         'description',
+        'summary',
         'completed',
         'time',
         'created_at',

@@ -136,6 +136,7 @@ export const createTask = async (
             user: user.id,
             title: faker.word.words(),
             description: faker.word.words(),
+            summary: faker.word.words(),
             time: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             completed: false,
             category: category.id,
