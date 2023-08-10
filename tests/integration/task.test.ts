@@ -121,16 +121,16 @@ describe('Task Routes', () => {
             const result = await server().get('/tasks').set('Authorization', `Bearer ${token}`);
 
             expect(result.status).toBe(HttpStatusCode.OK);
-            expect(result.body.data).toEqual(
-                expect.arrayContaining([
+            expect(result.body.data).toMatchObject({
+                tasks: expect.arrayContaining([
                     expect.objectContaining({
                         title: data.title,
                         description: data.description,
                         completed: data.completed,
                         category: data.category,
                     }),
-                ])
-            );
+                ]),
+            });
         });
     });
 
