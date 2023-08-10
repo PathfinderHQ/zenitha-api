@@ -4,7 +4,8 @@ import {
     errorResponse,
     generateNotificationSummaryFromTask,
     generateTasksFromTextInput,
-    serverErrorResponse, sortTasks,
+    serverErrorResponse,
+    sortTasks,
     successResponse,
     validateSchema,
 } from '../lib';

@@ -71,10 +71,16 @@ export const sortTasks = (tasks: Task[]): SortedTasks => {
         }
     });
 
-    current.sort((a: Task, b: Task) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
-    upcoming.sort((a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
-    past.sort((a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
-
+    current.sort(
+        (a: Task, b: Task) =>
+            new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf()
+    );
+    upcoming.sort(
+        (a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf()
+    );
+    past.sort(
+        (a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf()
+    );
 
     return { current, past, tasks, upcoming };
-}
+};

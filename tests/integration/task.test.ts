@@ -129,7 +129,7 @@ describe('Task Routes', () => {
                         completed: data.completed,
                         category: data.category,
                     }),
-                ])
+                ]),
             });
         });
     });
