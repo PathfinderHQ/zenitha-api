@@ -1,5 +1,5 @@
 import { FirebaseError } from 'firebase-admin';
-import { Response } from '../types';
+import { Response, Task } from '../types';
 import { FirebaseAuthError } from '../types/enums';
 import logger from '../config/log';
 import { HttpStatusCode } from '../config';
@@ -44,3 +44,37 @@ export const handleGoogleAuthError = (res: Response, error: CustomError): Respon
 export const generateJSONFromBase64 = (base64Data: string) => {
     return Buffer.from(base64Data, 'base64').toString('utf8');
 };
+
+interface SortedTasks {
+    upcoming: Task[];
+    past: Task[];
+    current: Task[];
+    tasks: Task[];
+}
+
+export const sortTasks = (tasks: Task[]): SortedTasks => {
+    const today = new Date().setHours(0, 0, 0, 0);
+
+    const current: Task[] = [];
+    const upcoming: Task[] = [];
+    const past: Task[] = [];
+
+    tasks.forEach((task) => {
+        const taskTime = new Date(task.time);
+
+        if (taskTime.setHours(0, 0, 0, 0) === today) {
+            current.push(task);
+        } else if (taskTime > new Date()) {
+            upcoming.push(task);
+        } else {
+            past.push(task);
+        }
+    });
+
+    current.sort((a: Task, b: Task) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
+    upcoming.sort((a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
+    past.sort((a, b) => new Date(b.time).setHours(0, 0, 0, 0).valueOf() - new Date(a.time).setHours(0, 0, 0, 0).valueOf());
+
+
+    return { current, past, tasks, upcoming };
+}

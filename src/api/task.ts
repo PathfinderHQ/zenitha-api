@@ -4,7 +4,7 @@ import {
     errorResponse,
     generateNotificationSummaryFromTask,
     generateTasksFromTextInput,
-    serverErrorResponse,
+    serverErrorResponse, sortTasks,
     successResponse,
     validateSchema,
 } from '../lib';
@@ -54,7 +54,7 @@ export const taskHTTPService = (server: Server) => {
         try {
             const tasks = await server.taskService.list({ ...req.query, user: req.user.id });
 
-            return successResponse(res, HttpStatusCode.OK, 'Tasks retrieved', tasks);
+            return successResponse(res, HttpStatusCode.OK, 'Tasks retrieved', sortTasks(tasks));
         } catch (err) {
             return serverErrorResponse(res, 'ListTasks', err);
         }
